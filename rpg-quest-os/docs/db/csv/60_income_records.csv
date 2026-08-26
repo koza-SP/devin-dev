@@ -1,0 +1,12 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,収益ID,income_id,TEXT,PK,Y,inc_<ULID>,,inc_01J9ZC8K3M
+2,計上日,date,TEXT,IDX,Y,,発生ベース(確定した売上の日),2026-08-26
+3,金額,amount,INTEGER,,Y,,円。税抜,45000
+4,区分,income_kind,TEXT,IDX,Y,,ACTIVE(役務由来) / PASSIVE(資産由来),ACTIVE
+5,継続フラグ,is_recurring,INTEGER,,Y,0,1ならMRRに算入,0
+6,取引先,client,TEXT,,N,,,株式会社サンプル
+7,関連資産ID,asset_id,TEXT,"FK,IDX",N,,PASSIVEの場合,
+8,関連クエストID,quest_id,TEXT,FK,N,,ACTIVEの場合,qst_01J9ZC8K3M
+9,対応消費AP,related_ap,REAL,,N,,Gold/AP算出に使う,24
+10,メモ,note,TEXT,,N,,,8月分の運用サポート
+11,入金予定日,expected_paid_at,TEXT,,N,,キャッシュフロー確認用,2026-09-30

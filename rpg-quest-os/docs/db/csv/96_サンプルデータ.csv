@@ -1,0 +1,42 @@
+﻿テーブル,項目,値,備考
+player_days,date,2026-08-26,ある1日の例
+player_days,ap_max,120,LV12 → 100+floor(12/5)*10=120
+player_days,sleep_hours,6.5,
+player_days,ap_start,111,"120 * min(1.0, 6.5/7.0) = 111.4 → 111"
+player_days,ap_planned,137,予定合計がap_maxを超過 → AP赤字 −17
+player_days,is_ap_deficit,1,赤字バナーを表示し、MAINT2件のBACKLOG送りを提案
+,,,
+quests(1),title,[B] プロダクトLPの改稿,カレンダー由来
+quests(1),quest_type,BUILD,接頭辞[B]で解決(resolved_by=PREFIX)
+quests(1),load,DEEP,マッピング規則の既定値
+quests(1),estimate_min,60,カレンダーの所要時間
+quests(1),estimate_ap,32,60/3*1.6=32
+quests(1),actual_min,65,実測
+quests(1),actual_ap,35,65/3*1.6=34.7 → 35
+quests(1),punctual_bonus,1.2,09:00予定に対し09:00:12着手
+quests(1),gained_exp,84,35 * 2.0(BUILD) * 1.0(FOCUS0) * 1.2 = 84
+quests(1),gained_asset_points,35.0,35 * 1.0(BUILD)
+quests(1),stat_tags,"[""INT"",""DEX""]",84*0.30/2 = 12 ずつ INT/DEX に加算
+,,,
+quests(2),title,[L] クライアントA 運用サポート,
+quests(2),quest_type,LABOR,
+quests(2),load,NORMAL,
+quests(2),actual_min,72,
+quests(2),actual_ap,24,72/3*1.0=24
+quests(2),gained_exp,21,24 * 0.8 * 1.1(FOCUS1) * 1.0 = 21.1 → 21
+quests(2),gained_gold,45000,income_recordsにACTIVEとして計上
+quests(2),gained_asset_points,0,役務なので資産は1ポイントも増えない
+,,,
+quests(3),title,経費精算,
+quests(3),quest_type,MAINT,
+quests(3),dread,2,2日放置 → dread_coef=1.10
+quests(3),estimate_min,40,
+quests(3),estimate_ap,9,40/3*0.6*1.10=8.8 → 9。dread2で+10%されている
+,,,
+daily_report,ap_spent,88,
+daily_report,ap_by_type,"{""BUILD"":35,""LABOR"":24,""MAINT"":12,""RAID"":17}",
+daily_report,aer,0.40,35 / 88 = 0.398 → 0.40
+daily_report,gold_gained,45000,
+daily_report,gold_per_ap,511,45000 / 88
+daily_report,alerts,[],AERが目標0.40に到達したためアラートなし
+daily_report,ai_review,役務24AP・会議17APで41APを消費。BUILDは35APで目標ぎりぎり。会議を週2枠に集約すれば+17APをBUILDに回せる。,Claudeによる講評の例

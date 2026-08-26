@@ -1,0 +1,13 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,イベントID,event_id,TEXT,PK,Y,evt_<ULID>,ULIDなので時系列に並ぶ,evt_01J9ZC8K3M
+2,連番,seq,INTEGER,"UQ,IDX",Y,,厳密な適用順序。再生時はこの順で処理する,18422
+3,対象日,date,TEXT,IDX,Y,,ゲーム内日付。JSONLのファイル分割キー,2026-08-26
+4,イベント種別,event_type,TEXT,IDX,Y,,90_enums の EventType,QUEST_COMPLETED
+5,エンティティ種別,entity_type,TEXT,IDX,Y,,quest/asset/player_day/ai_run など,quest
+6,エンティティID,entity_id,TEXT,IDX,Y,,,qst_01J9ZC8K3M
+7,ペイロード,payload,JSON,,Y,{},そのイベントで変化した内容の全体,"{""ap"":-27,""exp"":64}"
+8,発生元,actor,TEXT,,Y,USER,USER/CRON/CALENDAR_SYNC/AI_RUNNER/SYSTEM,USER
+9,スキーマ版,schema_version,INTEGER,,Y,1,再生ロジックの互換性維持に使う,1
+10,発生日時,occurred_at,TEXT,IDX,Y,,ISO8601,2026-08-26T10:05:00+09:00
+11,Vaultパス,vault_path,TEXT,,Y,,追記先ファイル,vault/events/2026-08-26.jsonl
+12,※このテーブルが正本,-,-,-,-,-,他の全テーブルはここから再構築できること(NFR-12),-

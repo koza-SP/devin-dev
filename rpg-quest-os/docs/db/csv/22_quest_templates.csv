@@ -1,0 +1,15 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,テンプレートID,template_id,TEXT,PK,Y,qtp_<ULID>,,qtp_01J9ZC8K3M
+2,名称,title,TEXT,,Y,,生成されるクエスト名,朝の運動
+3,種別,quest_type,TEXT,,Y,,,REST
+4,負荷,load,TEXT,,Y,NORMAL,,LIGHT
+5,見積分,estimate_min,INTEGER,,Y,30,,20
+6,繰返し,recurrence,TEXT,,Y,DAILY,DAILY/WEEKDAY/WEEKLY/MONTHLY/CRON,DAILY
+7,繰返し詳細,recurrence_detail,TEXT,,N,,WEEKLYなら曜日、CRONならcron式,"MON,WED,FRI"
+8,生成時刻,generate_at,TEXT,,Y,06:30,日次ロールオーバー時に生成,06:30
+9,ステータスタグ,stat_tags,JSON,,Y,[],,"[""VIT""]"
+10,関連資産ID,asset_id,TEXT,FK,N,,,
+11,Runner ID,runner_id,TEXT,FK,N,,,
+12,有効フラグ,is_active,INTEGER,,Y,1,,1
+13,連続達成日数,streak,INTEGER,,Y,0,連続で完了した日数。表示用,12
+14,最長連続,best_streak,INTEGER,,Y,0,,31

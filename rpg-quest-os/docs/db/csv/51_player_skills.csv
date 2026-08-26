@@ -1,0 +1,7 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,習得ID,player_skill_id,TEXT,PK,Y,psk_<ULID>,,psk_01J9ZC8K3M
+2,プレイヤーID,player_id,TEXT,"FK,IDX",Y,,,ply_01J9ZC8K3M
+3,スキルID,skill_id,TEXT,"FK,UQ",Y,,,skl_01J9ZC8K3M
+4,ランク,rank,INTEGER,,Y,1,同一スキルの強化段数,2
+5,習得日時,acquired_at,TEXT,,Y,,,2026-07-14T20:00:00+09:00
+6,有効フラグ,is_enabled,INTEGER,,Y,1,任意で無効化できる(検証用),1

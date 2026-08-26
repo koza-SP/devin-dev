@@ -1,0 +1,32 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,クエストID,quest_id,TEXT,PK,Y,qst_<ULID>,,qst_01J9ZC8K3M
+2,プレイヤーID,player_id,TEXT,"FK,IDX",Y,,,ply_01J9ZC8K3M
+3,タイトル,title,TEXT,,Y,,クエスト名,プロダクトLPの改稿
+4,説明,description,TEXT,,N,,詳細・完了条件,ファーストビューの訴求を作り直す
+5,種別,quest_type,TEXT,IDX,Y,UNSORTED,BUILD/GROW/LEARN/LABOR/MAINT/RAID/REST/UNSORTED,BUILD
+6,負荷,load,TEXT,,Y,NORMAL,LIGHT/NORMAL/DEEP/DRAIN,DEEP
+7,状態,status,TEXT,IDX,Y,BACKLOG,BACKLOG/PLANNED/ACTIVE/DONE/ABANDONED/EXPIRED,DONE
+8,資産性スコア,asset_score,INTEGER,,Y,0,0-100。種別の既定値から補正可能,85
+9,見積分,estimate_min,INTEGER,,Y,30,所要時間(分),60
+10,見積AP,estimate_ap,REAL,,Y,,ceil(見積分/3*load*dread*ambush*debuff),32
+11,実測分,actual_min,INTEGER,,N,,出撃〜完了の実測,50
+12,実消費AP,actual_ap,REAL,,N,,完了時に確定,27
+13,予定開始,scheduled_start,TEXT,IDX,N,,ISO8601。カレンダー由来なら必須,2026-08-26T09:00:00+09:00
+14,予定終了,scheduled_end,TEXT,,N,,ISO8601,2026-08-26T10:00:00+09:00
+15,期限,due_at,TEXT,IDX,N,,この日時を過ぎるとdreadが加算される,2026-08-27T23:59:00+09:00
+16,先延ばし値,dread,INTEGER,,Y,0,放置日数の累積。AP消費+5%/point(上限+50%),2
+17,繰越回数,defer_count,INTEGER,,Y,0,BACKLOG送り/期日変更の回数,2
+18,強襲フラグ,is_ambush,INTEGER,,Y,0,計画外実行なら1。AP×1.2・FOCUSリセット,0
+19,ステータスタグ,stat_tags,JSON,,Y,[],獲得EXPの30%を振り分ける先。最大2つ,"[""INT"",""DEX""]"
+20,関連資産ID,asset_id,TEXT,"FK,IDX",N,,assets.asset_id,ast_01J9ZC8K3M
+21,Runner ID,runner_id,TEXT,FK,N,,runners.runner_id。実行ボタンの中身,rnr_01J9ZC8K3M
+22,カレンダーイベントID,calendar_event_id,TEXT,"FK,UQ",N,,calendar_events.calendar_event_id,cev_01J9ZC8K3M
+23,テンプレートID,template_id,TEXT,FK,N,,quest_templates.template_id,qtp_01J9ZC8K3M
+24,親クエストID,parent_quest_id,TEXT,FK,N,,サブクエスト(1階層のみ),
+25,獲得EXP,gained_exp,INTEGER,,N,,完了時に確定,64
+26,獲得Gold,gained_gold,INTEGER,,N,0,LABOR時の売上(円),0
+27,獲得資産P,gained_asset_points,REAL,,N,0,BUILD/GROW/LEARN時,27.0
+28,完了日時,completed_at,TEXT,IDX,N,,ISO8601,2026-08-26T10:05:00+09:00
+29,作成日時,created_at,TEXT,,Y,,,2026-08-26T06:45:00+09:00
+30,更新日時,updated_at,TEXT,,Y,,,2026-08-26T10:05:00+09:00
+31,ソース,source,TEXT,,Y,MANUAL,MANUAL/CALENDAR/TEMPLATE/AI_SUGGEST,CALENDAR

@@ -1,0 +1,16 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,実行記録ID,quest_run_id,TEXT,PK,Y,qrn_<ULID>,,qrn_01J9ZC8K3M
+2,クエストID,quest_id,TEXT,"FK,IDX",Y,,,qst_01J9ZC8K3M
+3,対象日,date,TEXT,IDX,Y,,ゲーム内日付,2026-08-26
+4,開始日時,started_at,TEXT,,Y,,[出撃]押下時刻,2026-08-26T09:00:12+09:00
+5,終了日時,ended_at,TEXT,,N,,完了/放棄/中断の時刻,2026-08-26T10:05:33+09:00
+6,終了種別,end_kind,TEXT,,N,,COMPLETED/ABANDONED/INTERRUPTED/ROLLED_OVER,COMPLETED
+7,経過分,elapsed_min,INTEGER,,N,,ended_at - started_at,65
+8,予約AP,ap_reserved,REAL,,Y,,出撃時に確保したAP,32
+9,確定AP,ap_charged,REAL,,N,,終了時に確定した消費AP,27
+10,開始時FOCUS,focus_before,INTEGER,,Y,,,0
+11,終了時FOCUS,focus_after,INTEGER,,N,,,1
+12,時間厳守ボーナス,punctual_bonus,REAL,,N,1.0,±15分以内着手で1.2、日跨ぎ着手で0.8,1.2
+13,中断回数,interruption_count,INTEGER,,Y,0,作業中の割り込み回数,1
+14,自己申告の集中度,self_rating,INTEGER,,N,,1-5。振り返り用,4
+15,メモ,note,TEXT,,N,,,FVの構成を3案作った

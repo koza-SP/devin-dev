@@ -1,0 +1,11 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,マッピングID,mapping_id,TEXT,PK,Y,cmp_<ULID>,,cmp_01J9ZC8K3M
+2,優先度,priority,INTEGER,IDX,Y,100,"小さいほど優先。PREFIX=10,CALENDAR=20,COLOR=30,ATTENDEE=40",10
+3,ルール種別,rule_kind,TEXT,,Y,,PREFIX/CALENDAR/COLOR/ATTENDEE/KEYWORD,PREFIX
+4,条件値,match_value,TEXT,,Y,,接頭辞・カレンダーID・colorId・閾値,[B]
+5,変換先種別,quest_type,TEXT,,Y,,,BUILD
+6,既定負荷,default_load,TEXT,,Y,NORMAL,,DEEP
+7,既定資産性,default_asset_score,INTEGER,,Y,0,,85
+8,既定資産ID,default_asset_id,TEXT,FK,N,,常に同じ資産に紐づく場合,
+9,有効フラグ,is_active,INTEGER,,Y,1,,1
+10,備考,note,TEXT,,N,,,タイトル先頭の[B]をBUILDに変換

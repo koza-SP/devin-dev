@@ -1,0 +1,16 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,資産ID,asset_id,TEXT,PK,Y,ast_<ULID>,,ast_01J9ZC8K3M
+2,名称,name,TEXT,,Y,,,自社プロダクトLP
+3,種類,asset_kind,TEXT,IDX,Y,,PRODUCT/CONTENT/SYSTEM/AUDIENCE/SKILL/RELATION,PRODUCT
+4,説明,description,TEXT,,N,,,SaaSの申込導線
+5,URL,url,TEXT,,N,,,https://example.com/lp
+6,資産ポイント,asset_points,REAL,,Y,0,投下APの累積(減衰後),312.5
+7,耐久値,durability,INTEGER,,Y,100,0-100。放置で-1/日、GROWで回復,85
+8,減衰率,decay_rate,REAL,,Y,0.03,月あたり。90日放置で0.08に加速,0.03
+9,累計投下AP,total_ap_invested,REAL,,Y,0,この資産に投じたAPの総和(減衰なし),480
+10,収益モデル,revenue_model,TEXT,,N,,MRR/SPOT/AD/ROYALTY/INDIRECT/NONE,MRR
+11,累計収益,total_income,INTEGER,,Y,0,この資産由来のpassive収益合計(円),1240000
+12,AP回収額,income_per_ap,REAL,,N,,total_income / total_ap_invested,2583.3
+13,状態,status,TEXT,IDX,Y,ACTIVE,ACTIVE/DORMANT/ARCHIVED,ACTIVE
+14,最終更新クエスト日,last_worked_date,TEXT,,N,,最後にBUILD/GROWした日,2026-08-26
+15,作成日時,created_at,TEXT,,Y,,,2026-04-01T10:00:00+09:00

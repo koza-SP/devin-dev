@@ -1,0 +1,20 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,レポートID,report_id,TEXT,PK,Y,rep_<ULID>,,rep_01J9ZC8K3M
+2,対象日,date,TEXT,"UQ,IDX",Y,,,2026-08-26
+3,種別,report_kind,TEXT,,Y,DAILY,DAILY/WEEKLY/MONTHLY,DAILY
+4,消費AP,ap_spent,REAL,,Y,0,,88
+5,AP消化率,ap_usage_rate,REAL,,Y,0,ap_spent / ap_max,0.73
+6,AER,aer,REAL,,Y,0,資産系AP / 総AP,0.46
+7,種別別AP,ap_by_type,JSON,,Y,{},,"{""BUILD"":32,""LABOR"":24,""MAINT"":12}"
+8,完了数,done_count,INTEGER,,Y,0,,7
+9,放棄数,abandoned_count,INTEGER,,Y,0,,1
+10,強襲数,ambush_count,INTEGER,,Y,0,,2
+11,最高FOCUS,focus_max,INTEGER,,Y,0,,4
+12,獲得EXP,exp_gained,INTEGER,,Y,0,,218
+13,獲得Gold,gold_gained,INTEGER,,Y,0,,45000
+14,Gold/AP,gold_per_ap,REAL,,Y,0,,511.4
+15,資産P増加,asset_points_gained,REAL,,Y,0,,38.2
+16,アラート,alerts,JSON,,Y,[],AP_DEFICIT/LOW_AER/OVER_LABOR/EXHAUSTED など,"[""LOW_AER""]"
+17,AI講評,ai_review,TEXT,,N,,Claudeによる振り返りコメント,役務に24AP使っている。...
+18,翌日提案,ai_suggestion,JSON,,N,,翌日のクエスト提案,"[{""title"":""...""}]"
+19,生成日時,generated_at,TEXT,,Y,,,2026-08-26T22:00:00+09:00

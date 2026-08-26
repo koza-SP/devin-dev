@@ -1,0 +1,29 @@
+﻿No,メソッド,パス,説明,主なリクエスト,主なレスポンス,副作用(発生イベント),優先度
+1,GET,/api/state,現在のプレイヤー状態,-,"player, player_day, debuffs, next_quest",-,MUST
+2,GET,/api/quests,クエスト一覧,"date, status, type, asset_id",quests[],-,MUST
+3,POST,/api/quests,クエスト作成,"title, quest_type, load, estimate_min, due_at, stat_tags",quest(estimate_ap込み),QUEST_CREATED,MUST
+4,PATCH,/api/quests/:id,クエスト更新,変更フィールド,quest,QUEST_PLANNED 等,MUST
+5,POST,/api/quests/:id/start,出撃,is_ambush,quest_run,QUEST_STARTED,MUST
+6,POST,/api/quests/:id/complete,完了,"self_rating, note","quest, gains{ap,exp,gold,asset_points}",QUEST_COMPLETED,MUST
+7,POST,/api/quests/:id/abandon,放棄,reason,quest,QUEST_ABANDONED,MUST
+8,POST,/api/quests/:id/defer,繰越,new_due_at,quest(dread+1),QUEST_DEFERRED,MUST
+9,POST,/api/quests/:id/run,AI Runner起動,"runner_id, extra_input",run_id,AI_RUN_STARTED,MUST
+10,GET,/api/runs/:id,AI実行の状態取得,-,"ai_run, artifacts[]",-,MUST
+11,GET,/api/runs/:id/stream,AI実行の進捗(SSE),-,text/event-stream,-,MUST
+12,POST,/api/runs/:id/accept,成果物の採否,"artifact_id, acceptance",artifact,ARTIFACT_ACCEPTED,SHOULD
+13,POST,/api/checkin,起床チェックイン,sleep_hours,player_day,"CHECKED_IN, DAY_ROLLED_OVER",MUST
+14,POST,/api/rest,休息,"minutes, kind",player_day,REST_RECOVER,MUST
+15,POST,/api/sync/calendar,カレンダー手動同期,range,"synced_count, unsorted_count",CALENDAR_SYNCED,MUST
+16,GET,/api/assets,資産一覧,status,assets[],-,MUST
+17,POST,/api/assets,資産作成,"name, asset_kind, url",asset,ASSET_UPDATED,MUST
+18,PATCH,/api/assets/:id,資産更新,変更フィールド,asset,ASSET_UPDATED,MUST
+19,GET,/api/income,収益一覧,"from, to, kind",income_records[],-,SHOULD
+20,POST,/api/income,収益計上,"date, amount, income_kind, asset_id/quest_id",income_record,INCOME_RECORDED,SHOULD
+21,GET,/api/report/daily,日次レポート,date,daily_report,-,MUST
+22,GET,/api/report/weekly,週次レポート,week,weekly_report,-,SHOULD
+23,GET,/api/snapshots,スナップショット一覧,"from, to",snapshots[],-,SHOULD
+24,POST,/api/snapshot,スナップショット作成,kind,snapshot,SNAPSHOT_CREATED,SHOULD
+25,GET,/api/settings,設定取得,-,"balance_params, calendar_mappings",-,MUST
+26,PUT,/api/settings,設定更新,params,settings,-,MUST
+27,GET,/api/events,イベントログ取得,"date, from_seq",event_log[],-,SHOULD
+28,POST,/api/export,全データエクスポート,format,download_url,-,COULD

@@ -1,0 +1,22 @@
+﻿No,テーブル物理名,論理名,分類,件数見込/年,正本/派生,役割,主な参照元
+1,players,プレイヤー,10_リソース,1,派生,本人の恒常プロフィール・LV・累計EXP,全画面
+2,player_days,日次ステータス,10_リソース,365,派生,その日のAP/VIT/FOCUS・睡眠・デバフ,HOME
+3,resource_ledger,リソース増減台帳,10_リソース,"3,000",派生,AP/VIT/EXP/Gold/AssetPointの全増減を1行ずつ記録,レポート
+4,quests,クエスト,20_クエスト,"1,500",派生,タスク本体,HOME/BOARD
+5,quest_runs,クエスト実行記録,20_クエスト,"2,000",派生,出撃〜完了/放棄の1回分。中断再開で複数行,DETAIL
+6,quest_templates,定型クエスト,20_クエスト,50,派生,デイリー/ウィークリーの雛形,BOARD
+7,calendar_events,カレンダーイベント,30_同期,"2,000",派生,Googleカレンダーの同期データ,CALENDAR
+8,calendar_mappings,マッピング規則,30_同期,30,派生,イベント→クエスト種別の変換ルール,SETTINGS
+9,sync_state,同期状態,30_同期,5,派生,syncToken等の同期カーソル,内部
+10,assets,資産,40_資産,50,派生,積み上がった資産の台帳,ASSETS
+11,asset_events,資産増減イベント,40_資産,"2,000",派生,asset_points/durabilityの変動履歴,ASSETS
+12,skills,スキル定義,50_スキル,60,マスタ,スキルツリーのノード定義,STATUS
+13,player_skills,スキル習得状況,50_スキル,60,派生,習得済みスキルとランク,STATUS
+14,income_records,収益記録,60_収益,200,派生,確定売上の明細,LEDGER
+15,runners,AI Runner定義,70_AI,40,マスタ,Claude実行のプロンプト・入出力定義,DETAIL
+16,ai_runs,AI実行ログ,70_AI,"1,000",派生,Claude呼び出し1回分の記録とコスト,DETAIL
+17,artifacts,成果物,70_AI,"1,500",派生,AI/手作業の成果物。バージョン付き,DETAIL
+18,event_log,イベントログ,80_履歴,"20,000",★正本,全状態変化のappend-onlyログ。ここから全て再構築できる,内部/HISTORY
+19,snapshots,スナップショット,80_履歴,365,★正本,日次の状態スナップショット。再構築の起点,HISTORY
+20,balance_params,バランス係数,90_設定,60,マスタ,ゲームバランスの全定数。コード変更なしで調整する,内部
+21,daily_reports,日次レポート,90_設定,365,派生,日次集計とAI講評,REPORT

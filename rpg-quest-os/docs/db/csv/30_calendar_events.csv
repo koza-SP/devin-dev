@@ -1,0 +1,19 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,イベントID,calendar_event_id,TEXT,PK,Y,cev_<ULID>,内部ID,cev_01J9ZC8K3M
+2,Google イベントID,google_event_id,TEXT,"UQ,IDX",Y,,冪等upsertのキー,abc123def456
+3,カレンダーID,google_calendar_id,TEXT,IDX,Y,,,primary
+4,タイトル,summary,TEXT,,Y,,イベント名,[B] LP改稿
+5,説明,description,TEXT,,N,,,
+6,場所,location,TEXT,,N,,,オンライン
+7,開始日時,start_at,TEXT,IDX,Y,,ISO8601。終日ならYYYY-MM-DD,2026-08-26T09:00:00+09:00
+8,終了日時,end_at,TEXT,,Y,,,2026-08-26T10:00:00+09:00
+9,終日フラグ,is_all_day,INTEGER,,Y,0,終日はAP計算対象外(contextとして扱う),0
+10,参加者数,attendee_count,INTEGER,,Y,0,2以上ならRAID扱い,1
+11,色ID,color_id,TEXT,,N,,GoogleのcolorId。マッピングに使う,5
+12,自分の参加ステータス,response_status,TEXT,,N,,accepted/tentative/declined/needsAction,accepted
+13,判定種別,resolved_type,TEXT,,Y,UNSORTED,マッピング結果のクエスト種別,BUILD
+14,判定根拠,resolved_by,TEXT,,Y,NONE,PREFIX/CALENDAR/COLOR/ATTENDEE/NONE,PREFIX
+15,生成クエストID,quest_id,TEXT,FK,N,,生成済みなら設定,qst_01J9ZC8K3M
+16,Google更新日時,google_updated,TEXT,,Y,,競合解決に使う,2026-08-25T22:10:00Z
+17,削除フラグ,is_cancelled,INTEGER,,Y,0,Google側で削除された,0
+18,同期日時,synced_at,TEXT,,Y,,,2026-08-26T06:30:05+09:00

@@ -1,0 +1,36 @@
+﻿項目,内容
+ドキュメント名,QUEST OS DB設計・要件詳細スプレッドシート
+バージョン,0.1（要件詰め用ドラフト）
+作成日,2026-08-26
+目的,RPG型タスク管理OS「QUEST OS」のデータ構造・ゲームバランス・要件をタブ単位で拡張していくための作業台
+正の定義,本ファイルは docs/db/csv/*.csv から自動生成される。編集はCSV側、またはtools/db_spec_data.pyで行い、再生成すること
+再生成コマンド,python3 tools/build_db_spec.py
+,
+【タブの読み方】,
+00番台,総論・テーブル一覧・リレーション
+10番台,プレイヤーとリソース（AP/VIT/FOCUS/EXP/Gold）
+20番台,クエスト（タスク）
+30番台,Googleカレンダー同期
+40番台,資産（Asset）
+50番台,スキル
+60番台,収益
+70番台,AI Runner（Claude実行）
+80番台,イベントログ・スナップショット（バージョン履歴）
+90番台,列挙値・バランス係数・計算式・API・画面・要件一覧
+,
+【型の記法】,D1(SQLite)基準
+TEXT,文字列。ID・列挙値・ISO8601日時はすべてTEXT
+INTEGER,整数。真偽値は 0/1
+REAL,小数。係数・倍率・比率
+JSON,TEXT にJSON文字列として格納（D1にJSON型はない）
+,
+【キーの記法】,
+PK,主キー
+FK,外部キー
+UQ,ユニーク制約
+IDX,検索用インデックス
+,
+【ID採番規約】,
+形式,<接頭辞>_<ULID>  例: qst_01J9ZC8K3M4N5P6Q7R8S9T0V
+接頭辞,ply/pdy/led/qst/qrn/qtp/cev/cmp/ast/aev/skl/psk/inc/rnr/air/art/evt/snp/rep
+理由,ULIDは時系列ソート可能でオフライン生成できるため、ローカル正本(JSONL)と相性が良い

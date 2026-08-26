@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "date": "2026-08-26",
+  "last_seq": 19,
+  "generated_at": "2026-08-27T06:30:00+09:00",
+  "note": "この1ファイルと、これ以降の events/*.jsonl があれば任意時点の状態を再構築できる",
+
+  "player": {
+    "player_id": "ply_01J9ZC8K3M",
+    "display_name": "プレイヤー",
+    "level": 12,
+    "total_exp": 13652,
+    "current_exp": 439,
+    "next_exp": 2863,
+    "stats": { "STR": 142, "INT": 242, "DEX": 200, "CHA": 96, "LUK": 54, "VIT": 120 },
+    "total_gold": 4865000,
+    "asset_stock": 1877.5
+  },
+
+  "player_day": {
+    "date": "2026-08-26",
+    "ap_max": 120,
+    "ap_start": 111,
+    "ap_current": 36,
+    "ap_spent": 75,
+    "ap_planned": 119,
+    "vit_current": 80,
+    "focus": 0,
+    "focus_max_today": 2,
+    "sleep_hours": 6.5,
+    "debuffs": [],
+    "is_ap_deficit": false,
+    "aer_day": 0.47,
+    "gold_day": 45000,
+    "done_count": 3,
+    "abandoned_count": 0,
+    "ambush_count": 1,
+    "is_closed": true
+  },
+
+  "ap_by_type": { "BUILD": 35, "LABOR": 40 },
+
+  "assets": [
+    { "asset_id": "ast_01J9ZC8K3M01", "name": "プロダクトLP", "asset_kind": "PRODUCT",
+      "asset_points": 347.0, "durability": 90, "total_ap_invested": 515,
+      "revenue_model": "MRR", "total_income": 1240000, "status": "ACTIVE",
+      "last_worked_date": "2026-08-26" },
+    { "asset_id": "ast_01J9ZC8K3M02", "name": "技術記事シリーズ", "asset_kind": "CONTENT",
+      "asset_points": 186.0, "durability": 38, "total_ap_invested": 310,
+      "revenue_model": "AD", "total_income": 84000, "status": "ACTIVE",
+      "last_worked_date": "2026-07-30" },
+    { "asset_id": "ast_01J9ZC8K3M03", "name": "請求自動化", "asset_kind": "SYSTEM",
+      "asset_points": 94.0, "durability": 24, "total_ap_invested": 160,
+      "revenue_model": "INDIRECT", "total_income": 0, "status": "ACTIVE",
+      "last_worked_date": "2026-06-11" }
+  ],
+
+  "alerts": [
+    { "code": "ASSET_MAINTENANCE", "target": "請求自動化",
+      "message": "耐久24。閾値30を下回っている。GROWクエストで戻すこと" }
+  ],
+
+  "ai_cost_today_jpy": 42.5
+}

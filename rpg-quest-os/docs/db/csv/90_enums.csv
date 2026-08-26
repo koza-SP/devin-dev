@@ -1,0 +1,60 @@
+﻿列挙名,値,表示名,記号,説明,備考
+QuestType,BUILD,建設,🏗,資産を新規に作る,EXP×2.0 / 資産P係数1.0
+QuestType,GROW,育成,🌱,既存資産を伸ばす・保守する,EXP×1.5 / 資産P係数0.6 / durability回復
+QuestType,LEARN,修練,📖,自分自身への投資,EXP×1.2 / 資産P係数0.4
+QuestType,LABOR,役務,⚔,受託・作業。消費されて終わる,EXP×0.8 / Goldを生むが資産Pは0
+QuestType,MAINT,運営,🔧,事務・維持・雑務,EXP×0.5 / 資産P0
+QuestType,RAID,会議,👥,他者との同期,EXP×0.7 / VIT消費が大きい
+QuestType,REST,休息,💤,回復行動,EXP×0 / AP・VIT回復
+QuestType,UNSORTED,未仕分け,❓,カレンダー同期で判定できなかった,受信箱に入り手動仕分けを促す
+Load,LIGHT,軽作業,,メール返信・経費入力,係数0.6
+Load,NORMAL,通常,,資料作成・実装,係数1.0
+Load,DEEP,深い集中,,設計・執筆・難所の実装,係数1.6
+Load,DRAIN,消耗,,対人交渉・不確実性の高い折衝,係数2.2 / VIT消費あり
+QuestStatus,BACKLOG,未計画,,いつやるか決まっていない,
+QuestStatus,PLANNED,予定,,当日または将来の予定に入っている,AP予算に算入される
+QuestStatus,ACTIVE,出撃中,,実行中。同時に1件のみ,他の出撃を禁止する
+QuestStatus,DONE,完了,,,EXP/Gold/資産Pを確定付与
+QuestStatus,ABANDONED,放棄,,途中でやめた,FOCUSリセット・dread+1
+QuestStatus,EXPIRED,失効,,期限を過ぎ実行されずに終了,dreadを保持したままアーカイブ
+Debuff,EXHAUSTED,消耗,,VIT<30,AP消費×1.3 / FOCUS上限3
+Debuff,INCAPACITATED,行動不能,,VIT=0,REST以外の出撃を禁止
+Debuff,AP_DEFICIT,AP赤字,,予定AP合計>APmax,赤字バナー表示・BACKLOG送りを提案
+Debuff,OVER_LABOR,役務過多,,AERが2週連続で25%未満,警告表示
+AssetKind,PRODUCT,プロダクト,,販売する製品・サービス,
+AssetKind,CONTENT,コンテンツ,,記事・動画・教材,
+AssetKind,SYSTEM,仕組み,,自動化・業務基盤・テンプレート,
+AssetKind,AUDIENCE,読者・顧客基盤,,フォロワー・リスト・コミュニティ,
+AssetKind,SKILL,スキル,,自分自身の能力,LEARNの蓄積先
+AssetKind,RELATION,関係資本,,取引先・パートナー,
+AssetStatus,ACTIVE,稼働中,,,
+AssetStatus,DORMANT,休眠,,durability=0,passive収益の計上を停止
+AssetStatus,ARCHIVED,終了,,手動でクローズ,
+IncomeKind,ACTIVE,役務収入,,自分の時間を売って得た収入,LABORに紐づく
+IncomeKind,PASSIVE,資産収入,,資産が生んだ収入,assetsに紐づく
+LedgerReason,CHECKIN_RECOVER,起床回復,,睡眠によるAP/VIT回復,
+LedgerReason,QUEST_START,出撃(仮予約),,APの仮予約,
+LedgerReason,QUEST_COMPLETE,完了,,AP確定消費・EXP/Gold付与,
+LedgerReason,QUEST_ABANDON,放棄,,実測分のAPのみ消費,
+LedgerReason,REST_RECOVER,休息回復,,上限+40AP/日,
+LedgerReason,AMBUSH,強襲,,計画外実行,AP×1.2
+LedgerReason,DECAY,減衰,,資産の陳腐化,
+LedgerReason,ROLLOVER,日次繰越,,日跨ぎ処理,
+LedgerReason,MANUAL_ADJUST,手動補正,,運用上の調整,監査のため理由必須
+EventType,DAY_ROLLED_OVER,日次繰越,,,player_days生成
+EventType,CHECKED_IN,起床チェックイン,,,睡眠時間入力
+EventType,QUEST_CREATED,クエスト作成,,,
+EventType,QUEST_PLANNED,予定化,,,
+EventType,QUEST_STARTED,出撃,,,
+EventType,QUEST_COMPLETED,完了,,,
+EventType,QUEST_ABANDONED,放棄,,,
+EventType,QUEST_DEFERRED,繰越,,,dread+1
+EventType,CALENDAR_SYNCED,カレンダー同期,,,
+EventType,AI_RUN_STARTED,AI実行開始,,,
+EventType,AI_RUN_FINISHED,AI実行終了,,,
+EventType,ARTIFACT_ACCEPTED,成果物採用,,,資産へ反映
+EventType,ASSET_UPDATED,資産更新,,,
+EventType,INCOME_RECORDED,収益計上,,,
+EventType,SKILL_ACQUIRED,スキル習得,,,
+EventType,LEVEL_UP,レベルアップ,,,
+EventType,SNAPSHOT_CREATED,スナップショット作成,,,

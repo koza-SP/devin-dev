@@ -1,0 +1,17 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,実行ID,ai_run_id,TEXT,PK,Y,air_<ULID>,,air_01J9ZC8K3M
+2,クエストID,quest_id,TEXT,"FK,IDX",Y,,,qst_01J9ZC8K3M
+3,クエスト実行記録ID,quest_run_id,TEXT,FK,N,,どの出撃中に実行したか,qrn_01J9ZC8K3M
+4,Runner ID,runner_id,TEXT,FK,Y,,,rnr_01J9ZC8K3M
+5,状態,status,TEXT,IDX,Y,QUEUED,QUEUED/RUNNING/SUCCEEDED/FAILED/CANCELLED/BUDGET_BLOCKED,SUCCEEDED
+6,モデル,model,TEXT,,Y,,実際に使われたモデル,claude-opus-5
+7,入力トークン,input_tokens,INTEGER,,N,0,,3820
+8,出力トークン,output_tokens,INTEGER,,N,0,,2140
+9,概算コスト,cost_jpy,REAL,,N,0,円。日次上限の判定に使う,42.5
+10,所要ms,latency_ms,INTEGER,,N,,,18400
+11,試行回数,attempt,INTEGER,,Y,1,429/5xxは最大2回まで指数バックオフ,1
+12,エラー種別,error_kind,TEXT,,N,,RATE_LIMIT/SERVER/VALIDATION/BUDGET/TIMEOUT,
+13,エラー内容,error_message,TEXT,,N,,,
+14,実行元,invoked_from,TEXT,,Y,WEB,WEB/LOCAL_SKILL/CRON,WEB
+15,開始日時,started_at,TEXT,,Y,,,2026-08-26T09:15:00+09:00
+16,終了日時,finished_at,TEXT,,N,,,2026-08-26T09:15:18+09:00

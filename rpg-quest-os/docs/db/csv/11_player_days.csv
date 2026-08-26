@@ -1,0 +1,25 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,日次ID,player_day_id,TEXT,PK,Y,pdy_<ULID>,1日1レコード,pdy_01J9ZC8K3M
+2,プレイヤーID,player_id,TEXT,"FK,IDX",Y,,players.player_id,ply_01J9ZC8K3M
+3,対象日,date,TEXT,"UQ,IDX",Y,,ゲーム内日付(起床〜次の起床)。YYYY-MM-DD,2026-08-26
+4,最大AP,ap_max,INTEGER,,Y,100,"min(200, 100+floor(LV/5)*10)",120
+5,開始AP,ap_start,INTEGER,,Y,,"ap_max * min(1.0, 睡眠時間/7.0)",103
+6,残AP,ap_current,REAL,,Y,,現在の残スタミナ,38.5
+7,消費AP,ap_spent,REAL,,Y,0,当日の確定消費合計,64.5
+8,予約AP,ap_reserved,REAL,,Y,0,出撃中クエストの仮予約分,32
+9,予定AP合計,ap_planned,REAL,,Y,0,当日PLANNEDなクエストの見積合計,118
+10,休息回復AP,ap_rest_gained,REAL,,Y,0,RESTによる回復。上限40/日,20
+11,VIT,vit_current,INTEGER,,Y,100,現在の気力(0-100),42
+12,VIT開始値,vit_start,INTEGER,,Y,100,ロールオーバー直後の値,88
+13,FOCUS,focus,INTEGER,,Y,0,集中コンボ段数(0-5),3
+14,FOCUS最高値,focus_max_today,INTEGER,,Y,0,当日の最高コンボ,4
+15,睡眠時間,sleep_hours,REAL,,N,,チェックイン時に入力,6.5
+16,チェックイン日時,checked_in_at,TEXT,,N,,起床チェックインの実施時刻,2026-08-26T06:42:00+09:00
+17,デバフ,debuffs,JSON,,Y,[],有効なデバフの配列。90_enums参照,"[""EXHAUSTED""]"
+18,AP赤字フラグ,is_ap_deficit,INTEGER,,Y,0,ap_planned > ap_max なら1,1
+19,当日AER,aer_day,REAL,,Y,0,資産系AP消費 / 総AP消費,0.46
+20,当日Gold,gold_day,INTEGER,,Y,0,当日確定売上(円),45000
+21,完了数,done_count,INTEGER,,Y,0,DONEになったクエスト数,7
+22,放棄数,abandoned_count,INTEGER,,Y,0,ABANDONEDになった数,1
+23,強襲数,ambush_count,INTEGER,,Y,0,計画外実行の回数,2
+24,確定フラグ,is_closed,INTEGER,,Y,0,日次ロールオーバー完了で1。以後変更不可,1

@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QUEST OS — 拠点</title>
+<style>
+:root{
+  --bg:#0b0f1a; --bg2:#111726; --panel:#161e30; --panel2:#1c2740;
+  --line:#26324d; --line2:#33425f;
+  --txt:#e8edf7; --txt2:#94a3c0; --txt3:#5f6d8c;
+  --ap:#38bdf8; --ap2:#0ea5e9;
+  --vit:#34d399; --focus:#fbbf24; --exp:#a78bfa; --gold:#fcd34d;
+  --build:#f472b6; --grow:#4ade80; --learn:#60a5fa;
+  --labor:#fb923c; --maint:#94a3b8; --raid:#c084fc; --rest:#2dd4bf;
+  --danger:#f87171; --ok:#4ade80;
+  --r:14px;
+  --font:"Hiragino Kaku Gothic ProN","Yu Gothic",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 500px at 12% -8%, #1c2a4d 0%, transparent 60%),
+    radial-gradient(900px 460px at 92% 4%, #2a1c40 0%, transparent 58%),
+    var(--bg);
+  color:var(--txt); font-family:var(--font); font-size:14px; line-height:1.65;
+  min-height:100vh; padding-bottom:64px; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px;margin:0 auto;padding:0 16px}
+a{color:var(--ap)}
+
+/* ── ヘッダ ───────────────────────────── */
+header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(11,15,26,.86); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.hd{display:flex;align-items:center;gap:14px;padding:10px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.14em;font-size:12px}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--ap);box-shadow:0 0 12px var(--ap)}
+.lv{
+  display:flex;align-items:baseline;gap:5px;padding:3px 10px;border-radius:999px;
+  background:linear-gradient(135deg,#3b2b6e,#1e2a52); border:1px solid #4b3f8f;
+}
+.lv b{font-size:17px;color:#d9ccff;font-variant-numeric:tabular-nums}
+.lv span{font-size:9px;letter-spacing:.16em;color:#a99ce0}
+.vitals{display:flex;gap:12px;flex:1;min-width:260px;flex-wrap:wrap}
+.vital{flex:1;min-width:112px}
+.vital .lab{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.11em;color:var(--txt2);margin-bottom:3px}
+.vital .lab b{color:var(--txt);font-variant-numeric:tabular-nums;letter-spacing:0}
+.bar{height:7px;border-radius:99px;background:#0a1120;overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.3,1)}
+.bar.ap i{background:linear-gradient(90deg,var(--ap2),var(--ap))}
+.bar.vit i{background:linear-gradient(90deg,#059669,var(--vit))}
+.bar.exp i{background:linear-gradient(90deg,#7c3aed,var(--exp))}
+.pips{display:flex;gap:3px;align-items:center}
+.pip{width:12px;height:7px;border-radius:2px;background:#152034;border:1px solid var(--line)}
+.pip.on{background:linear-gradient(90deg,#f59e0b,var(--focus));border-color:#b45309;box-shadow:0 0 7px rgba(251,191,36,.55)}
+.gold{display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums;color:var(--gold);font-weight:700;white-space:nowrap}
+
+/* ── デバフ ──────────────────────────── */
+.debuffs{display:flex;gap:6px;flex-wrap:wrap;padding:0 0 9px}
+.debuff{
+  font-size:10.5px;letter-spacing:.08em;padding:2.5px 9px;border-radius:99px;
+  border:1px solid var(--danger);color:#fecaca;background:rgba(248,113,113,.11);font-weight:700;
+}
+.debuff.warn{border-color:#f59e0b;color:#fde68a;background:rgba(245,158,11,.11)}
+
+/* ── 汎用パネル ───────────────────────── */
+.panel{
+  background:linear-gradient(180deg,var(--panel),var(--bg2));
+  border:1px solid var(--line); border-radius:var(--r); padding:16px; margin-bottom:14px;
+}
+.ttl{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:10.5px;letter-spacing:.19em;color:var(--txt2);font-weight:800;margin-bottom:11px;
+}
+.ttl .hint{letter-spacing:0;font-weight:400;color:var(--txt3);font-size:11px}
+
+/* ── 予算 ────────────────────────────── */
+.budget{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.budget{grid-template-columns:1fr}}
+.metric{display:flex;align-items:baseline;gap:7px;margin-bottom:6px}
+.metric .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.metric .u{font-size:11px;color:var(--txt2)}
+.metric .tag{margin-left:auto;font-size:11px;font-weight:700}
+.bar.lg{height:13px}
+.bar.lg i{background:linear-gradient(90deg,var(--ap2),var(--ap))}
+.bar.lg.over i{background:linear-gradient(90deg,#dc2626,var(--danger))}
+.bar.lg.aer i{background:linear-gradient(90deg,#db2777,var(--build))}
+.barwrap{position:relative}
+.goalmark{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--txt);opacity:.65}
+.goalmark::after{content:attr(data-l);position:absolute;top:-15px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--txt2);white-space:nowrap}
+.alert{
+  margin-top:12px;display:flex;gap:10px;align-items:flex-start;
+  border:1px solid var(--danger);background:rgba(248,113,113,.09);
+  border-radius:10px;padding:10px 12px;font-size:12.5px;color:#fecaca;
+}
+.alert b{color:#fff}
+.alert .act{margin-left:auto}
+
+/* ── NEXT QUEST ──────────────────────── */
+.next{
+  position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#22305a 0%, #1a2340 45%, #171f36 100%);
+  border:1px solid #3d4f80; border-radius:18px; padding:20px;
+  box-shadow:0 0 0 1px rgba(56,189,248,.09), 0 20px 44px -22px rgba(0,0,0,.85);
+  margin-bottom:14px;
+}
+.next::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(560px 190px at 82% -30%, rgba(56,189,248,.2), transparent 70%);
+}
+.next-lab{
+  font-size:10px;letter-spacing:.28em;color:var(--ap);font-weight:800;
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+}
+.next-lab::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(56,189,248,.45),transparent)}
+.qchips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+.chip{
+  font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:3px 9px;border-radius:6px;
+  border:1px solid currentColor;
+}
+.chip.sub{border-color:var(--line2);color:var(--txt2);font-weight:600;letter-spacing:.04em}
+.qtitle{font-size:23px;font-weight:800;line-height:1.35;letter-spacing:-.01em;margin-bottom:6px}
+@media(max-width:520px){.qtitle{font-size:19px}}
+.qdesc{color:var(--txt2);font-size:12.5px;margin-bottom:14px}
+.rewards{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:16px}
+.rw{
+  background:rgba(9,14,26,.62);border:1px solid var(--line);border-radius:9px;
+  padding:7px 12px;min-width:78px;
+}
+.rw .k{font-size:9.5px;letter-spacing:.13em;color:var(--txt3);font-weight:700}
+.rw .v{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  border:0;border-radius:11px;padding:13px 22px;font-family:var(--font);
+  font-size:14px;font-weight:800;letter-spacing:.05em;cursor:pointer;
+  transition:transform .12s, filter .12s, box-shadow .12s;
+}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.34;cursor:not-allowed;filter:grayscale(.7)}
+.btn.go{background:linear-gradient(135deg,#0284c7,#38bdf8);color:#04121f;box-shadow:0 8px 22px -10px rgba(56,189,248,.9)}
+.btn.go:hover:not(:disabled){filter:brightness(1.1)}
+.btn.done{background:linear-gradient(135deg,#15803d,#4ade80);color:#04180c;box-shadow:0 8px 22px -10px rgba(74,222,128,.85)}
+.btn.ai{background:linear-gradient(135deg,#6d28d9,#a78bfa);color:#120a26;box-shadow:0 8px 22px -10px rgba(167,139,250,.85)}
+.btn.ghost{background:transparent;border:1px solid var(--line2);color:var(--txt2)}
+.btn.sm{padding:8px 14px;font-size:12px;border-radius:9px}
+.timer{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  background:rgba(9,14,26,.6);border:1px solid #3d4f80;border-radius:11px;padding:10px 14px;
+}
+.timer .t{font-family:var(--mono);font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ap)}
+.timer .s{font-size:11px;color:var(--txt2)}
+.blink{width:8px;height:8px;border-radius:50%;background:var(--danger);animation:bl 1.15s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.18}}
+.locked{font-size:11.5px;color:var(--txt3);margin-top:9px}
+
+/* ── クエスト一覧 ─────────────────────── */
+.qrow{
+  display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;
+  border:1px solid transparent;transition:background .15s,border-color .15s;
+}
+.qrow+.qrow{margin-top:2px}
+.qrow:hover{background:var(--panel2);border-color:var(--line)}
+.qrow .ic{font-size:17px;width:24px;text-align:center;flex-shrink:0}
+.qrow .mid{flex:1;min-width:0}
+.qrow .nm{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qrow .meta{font-size:10.5px;color:var(--txt3);display:flex;gap:8px;flex-wrap:wrap}
+.qrow .ap{font-family:var(--mono);font-size:13px;color:var(--ap);font-variant-numeric:tabular-nums;flex-shrink:0}
+.qrow.dn{opacity:.42}
+.qrow.dn .nm{text-decoration:line-through}
+.dreadtag{color:#fca5a5;font-weight:700}
+
+/* ── 種別内訳 ─────────────────────────── */
+.stack{display:flex;height:26px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#0a1120}
+.stack div{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#08111f;transition:flex-grow .5s}
+.legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--txt2)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.split{grid-template-columns:1fr}}
+
+/* ── イベントログ ─────────────────────── */
+.log{
+  font-family:var(--mono);font-size:10.5px;line-height:1.85;color:#7f8fae;
+  background:#080d17;border:1px solid var(--line);border-radius:10px;
+  padding:11px 13px;max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-all;
+}
+.log .n{color:var(--ok)}
+footer{color:var(--txt3);font-size:11px;text-align:center;padding:26px 0 0}
+.kbd{font-family:var(--mono);font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 5px;color:var(--txt2)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="hd">
+      <div class="brand"><span class="dot"></span>QUEST&nbsp;OS</div>
+      <div class="lv"><span>LV</span><b id="lv">12</b></div>
+
+      <div class="vitals">
+        <div class="vital">
+          <div class="lab"><span>AP スタミナ</span><b><span id="apNow">78</span>/<span id="apMax">120</span></b></div>
+          <div class="bar ap"><i id="apBar" style="width:65%"></i></div>
+        </div>
+        <div class="vital">
+          <div class="lab"><span>VIT 気力</span><b id="vitNow">42</b></div>
+          <div class="bar vit"><i id="vitBar" style="width:42%"></i></div>
+        </div>
+        <div class="vital">
+          <div class="lab"><span>EXP</span><b><span id="expNow">310</span>/<span id="expNext">2863</span></b></div>
+          <div class="bar exp"><i id="expBar" style="width:50%"></i></div>
+        </div>
+        <div class="vital" style="max-width:120px">
+          <div class="lab"><span>FOCUS</span><b id="fcNum">1</b></div>
+          <div class="pips" id="pips"></div>
+        </div>
+      </div>
+
+      <div class="gold">◈ <span id="gold">45,000</span></div>
+    </div>
+    <div class="debuffs" id="debuffs"></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- 本日の予算 -->
+  <section class="panel">
+    <div class="ttl">本日の予算 <span class="hint">2026-08-26 (水) ・ 睡眠 6.5h → AP上限 120 の 93%</span></div>
+    <div class="budget">
+      <div>
+        <div class="metric">
+          <span class="v" id="apPlanned">137</span><span class="u">/ 120 AP 予定</span>
+          <span class="tag" id="apDelta" style="color:var(--danger)">−17 超過</span>
+        </div>
+        <div class="barwrap">
+          <div class="bar lg over" id="apPlanBarWrap"><i id="apPlanBar" style="width:100%"></i></div>
+          <div class="goalmark" data-l="上限120" id="apGoal" style="left:87%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="metric">
+          <span class="v" id="aerV">40</span><span class="u">% AER 資産投下率</span>
+          <span class="tag" id="aerTag" style="color:var(--ok)">目標達成</span>
+        </div>
+        <div class="barwrap">
+          <div class="bar lg aer"><i id="aerBar" style="width:40%"></i></div>
+          <div class="goalmark" data-l="目標40%" style="left:40%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="alert" id="deficit">
+      <span>⚠</span>
+      <div id="deficitMsg"></div>
+      <button class="btn ghost sm act" id="fixDeficit">BACKLOG へ送る</button>
+    </div>
+  </section>
+
+  <!-- NEXT QUEST -->
+  <section class="next" id="nextCard">
+    <div class="next-lab">NEXT QUEST — 今やるのはこれ1件だけ</div>
+    <div id="nextBody"></div>
+  </section>
+
+  <div class="split">
+    <!-- 残りのクエスト -->
+    <section class="panel">
+      <div class="ttl">クエストボード <span class="hint" id="qCount"></span></div>
+      <div id="qlist"></div>
+    </section>
+
+    <!-- 内訳 -->
+    <section class="panel">
+      <div class="ttl">今日のAP内訳 <span class="hint">左が資産・右が役務</span></div>
+      <div class="stack" id="stack"></div>
+      <div class="legend" id="legend"></div>
+      <div class="ttl" style="margin-top:20px">宝物庫 <span class="hint">耐久値</span></div>
+      <div id="assets"></div>
+    </section>
+  </div>
+
+  <!-- イベントログ -->
+  <section class="panel">
+    <div class="ttl">
+      vault/events/2026-08-26.jsonl
+      <span class="hint">追記のみ。ここから全状態を再構築できる（＝バージョン履歴の実体）</span>
+    </div>
+    <div class="log" id="log"></div>
+  </section>
+
+  <footer>
+    QUEST OS — Phase 1 プロトタイプ（localStorage 保存・API不要）<br>
+    <span class="kbd">S</span> 出撃 &nbsp; <span class="kbd">D</span> 完了 &nbsp; <span class="kbd">A</span> 放棄 &nbsp; <span class="kbd">R</span> リセット
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   バランス係数（本番では balance_params テーブルから読む）
+   ============================================================ */
+const P = {
+  minutesPerAp: 3,
+  load:      { LIGHT:0.6, NORMAL:1.0, DEEP:1.6, DRAIN:2.2 },
+  expMult:   { BUILD:2.0, GROW:1.5, LEARN:1.2, LABOR:0.8, MAINT:0.5, RAID:0.7, REST:0 },
+  apRatio:   { BUILD:1.0, GROW:0.6, LEARN:0.4 },
+  focusExpStep: 0.10, focusMax: 5,
+  dreadPenalty: 0.05, dreadCap: 0.50,
+  ambushMult: 1.2,
+  exhaustedThreshold: 30, exhaustedMult: 1.3,
+  aerTarget: 0.40,
+};
+const TYPE = {
+  BUILD:{ic:"🏗",jp:"建設",c:"var(--build)"}, GROW :{ic:"🌱",jp:"育成",c:"var(--grow)"},
+  LEARN:{ic:"📖",jp:"修練",c:"var(--learn)"}, LABOR:{ic:"⚔️",jp:"役務",c:"var(--labor)"},
+  MAINT:{ic:"🔧",jp:"運営",c:"var(--maint)"}, RAID :{ic:"👥",jp:"会議",c:"var(--raid)"},
+  REST :{ic:"💤",jp:"休息",c:"var(--rest)"},
+};
+const ASSET_TYPES = ["BUILD","GROW","LEARN"];
+
+/* ============================================================
+   計算式（92_formulas と対応）
+   ============================================================ */
+const apCost = (min, q, st) => {
+  const dread  = Math.min(1 + P.dreadPenalty * (q.dread||0), 1 + P.dreadCap);
+  const ambush = q.ambush ? P.ambushMult : 1;
+  const debuff = st.vit < P.exhaustedThreshold ? P.exhaustedMult : 1;
+  return Math.ceil(min / P.minutesPerAp * P.load[q.load] * dread * ambush * debuff);
+};
+const gainExp = (ap, q, focus) =>
+  Math.round(ap * P.expMult[q.type] * (1 + P.focusExpStep * focus) * (q.punctual ?? 1));
+const nextExp = lv => Math.round(100 * Math.pow(lv, 1.35));
+
+/* ============================================================
+   初期状態
+   ============================================================ */
+const seed = () => ({
+  date:"2026-08-26", lv:12, exp:310, apMax:120, ap:111, vit:42, focus:1, gold:45000,
+  spent:{}, events:[], deficitFixed:false, active:null, startedAt:null,
+  assets:[
+    {name:"プロダクトLP",   kind:"PRODUCT", dur:72, pts:312},
+    {name:"技術記事シリーズ", kind:"CONTENT", dur:38, pts:186},
+    {name:"請求自動化",     kind:"SYSTEM",  dur:24, pts:94},
+  ],
+  quests:[
+    {id:"q1",title:"プロダクトLPの改稿",       desc:"ファーストビューの訴求を作り直す。3案出して1案に絞る。",
+     type:"BUILD",load:"DEEP",min:60,at:"09:00",score:85,tags:["INT","DEX"],asset:"プロダクトLP",
+     dread:0,punctual:1.2,status:"PLANNED",runner:"LPコピー3案生成"},
+    {id:"q2",title:"クライアントA 運用サポート", desc:"月次の定例作業。売上は立つが何も積み上がらない。",
+     type:"LABOR",load:"NORMAL",min:90,at:"11:00",score:10,tags:["STR"],gold:45000,
+     dread:0,status:"PLANNED"},
+    {id:"q3",title:"週次ふりかえりMTG",         desc:"参加者4名。",
+     type:"RAID",load:"DRAIN",min:45,at:"14:00",score:20,tags:["CHA"],dread:0,status:"PLANNED"},
+    {id:"q4",title:"技術記事の続編を書く",       desc:"既存シリーズの4本目。",
+     type:"GROW",load:"DEEP",min:45,at:"16:00",score:70,tags:["INT"],asset:"技術記事シリーズ",
+     dread:0,status:"PLANNED"},
+    {id:"q5",title:"経費精算",                  desc:"2日放置している。",
+     type:"MAINT",load:"LIGHT",min:40,at:null,score:0,tags:[],dread:2,status:"PLANNED"},
+    {id:"q6",title:"請求書の送付",              desc:"",
+     type:"MAINT",load:"LIGHT",min:40,at:null,score:0,tags:[],dread:1,status:"PLANNED"},
+    {id:"q7",title:"夕方の散歩",                desc:"VITを回復する。",
+     type:"REST",load:"LIGHT",min:30,at:"18:00",score:0,tags:["VIT"],dread:0,status:"PLANNED"},
+  ],
+});
+
+const KEY = "questos.demo.v1";
+let S = null;
+S = load();
+function load(){ try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){} const s = seed(); S = s; s.events.push(ev("DAY_ROLLED_OVER","player_day",s.date,{ap_max:s.apMax,ap_start:s.ap,sleep_hours:6.5})); s.events.push(ev("CHECKED_IN","player_day",s.date,{sleep_hours:6.5,vit:s.vit})); return s; }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function ev(type, et, eid, payload){
+  return {seq:(S&&S.events?S.events.length:0)+1, ts:new Date().toISOString().slice(11,19), type, entity_type:et, entity_id:eid, payload, actor:"USER"};
+}
+function push(type, et, eid, payload){ S.events.push(ev(type,et,eid,payload)); }
+
+/* ============================================================
+   派生値
+   ============================================================ */
+const planned = () => S.quests.filter(q => q.status==="PLANNED" && q.type!=="REST");
+const plannedAp = () => planned().reduce((a,q)=>a+apCost(q.min,q,S),0);
+const spentTotal = () => Object.values(S.spent).reduce((a,b)=>a+b,0);
+const aer = () => {
+  const t = spentTotal(); if(!t) return 0;
+  return ASSET_TYPES.reduce((a,k)=>a+(S.spent[k]||0),0) / t;
+};
+function pickNext(){
+  const c = S.quests.filter(q=>q.status==="PLANNED");
+  if(!c.length) return null;
+  return c.slice().sort((a,b)=>
+    (a.at?0:1)-(b.at?0:1) || String(a.at).localeCompare(String(b.at)) ||
+    (b.dread-a.dread) || (b.score-a.score)
+  )[0];
+}
+
+/* ============================================================
+   描画
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString("ja-JP");
+
+function render(){
+  const apPct = Math.max(0, Math.min(100, S.ap / S.apMax * 100));
+  $("lv").textContent = S.lv;
+  $("apNow").textContent = Math.round(S.ap); $("apMax").textContent = S.apMax;
+  $("apBar").style.width = apPct + "%";
+  $("vitNow").textContent = S.vit; $("vitBar").style.width = S.vit + "%";
+  const nx = nextExp(S.lv);
+  $("expNow").textContent = S.exp; $("expNext").textContent = nx;
+  $("expBar").style.width = Math.min(100, S.exp / nx * 100) + "%";
+  $("fcNum").textContent = S.focus;
+  $("gold").textContent = fmt(S.gold);
+  $("pips").innerHTML = Array.from({length:P.focusMax},(_,i)=>
+    `<span class="pip ${i<S.focus?"on":""}"></span>`).join("");
+
+  // デバフ
+  const d = [];
+  if(S.vit < P.exhaustedThreshold) d.push(["消耗 — AP消費 ×1.3 / FOCUS上限3","" ]);
+  if(S.vit === 0) d.push(["行動不能 — REST以外は出撃できない",""]);
+  const pa = plannedAp();
+  if(pa > S.apMax) d.push([`AP赤字 −${pa - S.apMax} — 予定が上限を超えている`,""]);
+  if(aer() > 0 && aer() < 0.25) d.push(["役務過多 — AER 25%未満","warn"]);
+  $("debuffs").innerHTML = d.map(([t,c])=>`<span class="debuff ${c}">${t}</span>`).join("");
+
+  // 予算
+  $("apPlanned").textContent = pa;
+  const over = pa > S.apMax;
+  $("apDelta").textContent = over ? `−${pa-S.apMax} 超過` : `残 ${S.apMax-pa}`;
+  $("apDelta").style.color = over ? "var(--danger)" : "var(--ok)";
+  $("apPlanBarWrap").classList.toggle("over", over);
+  $("apPlanBar").style.width = Math.min(100, pa / Math.max(pa, S.apMax) * 100) + "%";
+  $("apGoal").style.left = Math.min(100, S.apMax / Math.max(pa, S.apMax) * 100) + "%";
+  $("deficit").style.display = (over && !S.deficitFixed) ? "flex" : "none";
+  if(over && !S.deficitFixed){
+    const m = S.quests.filter(q=>q.status==="PLANNED" && q.type==="MAINT");
+    const mAp = m.reduce((a,q)=>a+apCost(q.min,q,S),0);
+    $("deficitMsg").innerHTML =
+      `<b>AP赤字 −${pa-S.apMax}。</b>今日はこの予定を全部は消化できない。` +
+      (m.length
+        ? `資産性ゼロの MAINT ${m.length}件（計${mAp}AP）を BACKLOG に送れば ${pa-mAp}/${S.apMax} で収まる。`
+        : `軽いクエストから外して ${S.apMax} AP 以内に収めること。`);
+    $("fixDeficit").style.display = m.length ? "" : "none";
+    $("fixDeficit").textContent = `MAINT ${m.length}件（${mAp}AP）を送る`;
+  }
+
+  const a = aer();
+  $("aerV").textContent = Math.round(a*100);
+  $("aerBar").style.width = Math.round(a*100) + "%";
+  $("aerTag").textContent = a >= P.aerTarget ? "目標達成" : (spentTotal() ? "目標未達" : "未消化");
+  $("aerTag").style.color = a >= P.aerTarget ? "var(--ok)" : "var(--focus)";
+
+  renderNext(); renderList(); renderStack(); renderAssets(); renderLog();
+  save();
+}
+
+function renderNext(){
+  const q = S.active ? S.quests.find(x=>x.id===S.active) : pickNext();
+  if(!q){ $("nextBody").innerHTML = `<div class="qtitle">今日のクエストは完了</div>
+    <div class="qdesc">残りのAPは ${Math.round(S.ap)}。休むか、BACKLOG から1件だけ引く。</div>`; return; }
+
+  const t = TYPE[q.type], ap = apCost(q.min,q,S), exp = gainExp(ap,q,S.focus);
+  const gain = ASSET_TYPES.includes(q.type) ? Math.round(ap * P.apRatio[q.type] * 10)/10 : 0;
+  const isActive = S.active === q.id;
+  const canAfford = S.ap >= ap;
+  const blockedByVit = S.vit === 0 && q.type !== "REST";
+
+  $("nextBody").innerHTML = `
+    <div class="qchips">
+      <span class="chip" style="color:${t.c}">${t.ic} ${q.type} ${t.jp}</span>
+      <span class="chip sub">${q.load}</span>
+      <span class="chip sub">${q.at ? q.at+" 予定" : "時刻未定"}</span>
+      <span class="chip sub">資産性 ${q.score}</span>
+      ${q.dread ? `<span class="chip" style="color:var(--danger)">先延ばし +${q.dread}日 → AP+${q.dread*5}%</span>`:""}
+    </div>
+    <div class="qtitle">${q.title}</div>
+    <div class="qdesc">${q.desc || "&nbsp;"}</div>
+    ${isActive ? `
+      <div class="timer">
+        <span class="blink"></span>
+        <span class="t" id="tmr">00:00</span>
+        <span class="s">出撃中 — 他のクエストは出撃できない</span>
+      </div>`:""}
+    <div class="rewards">
+      ${q.type==="REST"
+        ? `<div class="rw"><div class="k">AP 回復</div><div class="v" style="color:var(--ap)">+20</div></div>
+           <div class="rw"><div class="k">VIT 回復</div><div class="v" style="color:var(--vit)">+15</div></div>`
+        : `<div class="rw"><div class="k">AP 消費</div><div class="v" style="color:var(--ap)">−${ap}</div></div>
+           <div class="rw"><div class="k">EXP</div><div class="v" style="color:var(--exp)">+${exp}</div></div>`}
+      <div class="rw"><div class="k">資産P</div><div class="v" style="color:${gain?"var(--build)":"var(--txt3)"}">${gain?"+"+gain:"0"}</div></div>
+      ${q.gold?`<div class="rw"><div class="k">GOLD</div><div class="v" style="color:var(--gold)">+${fmt(q.gold)}</div></div>`:""}
+      <div class="rw"><div class="k">見積</div><div class="v">${q.min}<span style="font-size:11px">分</span></div></div>
+    </div>
+    <div class="acts">
+      ${isActive
+        ? `<button class="btn done" id="bDone">✔ 完了する</button>
+           <button class="btn ghost" id="bAbort">放棄する</button>`
+        : `<button class="btn go" id="bGo" ${(!canAfford||blockedByVit)?"disabled":""}>⚔ 出撃する</button>`}
+      ${q.runner ? `<button class="btn ai" id="bAi">⚡ Claudeで実行 — ${q.runner}</button>`:""}
+    </div>
+    ${!canAfford && !isActive ? `<div class="locked">AP が ${ap-Math.round(S.ap)} 足りない。休息を取るか、より軽いクエストを選ぶ。</div>`:""}
+    ${blockedByVit ? `<div class="locked">VIT 0 のため出撃できない。REST のみ実行可能。</div>`:""}
+    ${gain===0 && q.type!=="REST" ? `<div class="locked">このクエストは資産を1ポイントも積み上げない。AER が下がる。</div>`:""}
+  `;
+
+  $("bGo")   && ($("bGo").onclick   = ()=>start(q));
+  $("bDone") && ($("bDone").onclick = ()=>complete(q));
+  $("bAbort")&& ($("bAbort").onclick= ()=>abandon(q));
+  $("bAi")   && ($("bAi").onclick   = ()=>runAi(q));
+}
+
+function renderList(){
+  const cur = S.active || (pickNext() && pickNext().id);
+  const rest = S.quests.filter(q => q.id !== cur);
+  $("qCount").textContent = `残り ${rest.filter(q=>q.status==="PLANNED").length} 件 / 完了 ${S.quests.filter(q=>q.status==="DONE").length} 件`;
+  $("qlist").innerHTML = rest.map(q=>{
+    const t = TYPE[q.type], ap = apCost(q.min,q,S);
+    return `<div class="qrow ${q.status!=="PLANNED"?"dn":""}">
+      <span class="ic">${t.ic}</span>
+      <span class="mid">
+        <div class="nm">${q.title}</div>
+        <div class="meta">
+          <span style="color:${t.c}">${q.type}</span>
+          <span>${q.at||"未定"}</span><span>${q.min}分</span>
+          ${q.dread?`<span class="dreadtag">先延ばし+${q.dread}</span>`:""}
+          ${q.status==="DONE"?"<span>完了</span>":q.status==="ABANDONED"?"<span>放棄</span>":q.status==="BACKLOG"?"<span>BACKLOG</span>":""}
+        </div>
+      </span>
+      <span class="ap" style="${q.type==="REST"?"color:var(--vit)":""}">${q.status!=="PLANNED"?"—":q.type==="REST"?"+20AP":ap+"AP"}</span>
+    </div>`;
+  }).join("");
+}
+
+function renderStack(){
+  const keys = Object.keys(S.spent).filter(k=>S.spent[k]>0)
+    .sort((a,b)=>(ASSET_TYPES.includes(b)?1:0)-(ASSET_TYPES.includes(a)?1:0));
+  if(!keys.length){ $("stack").innerHTML = `<div style="flex:1;color:var(--txt3);font-weight:400">まだ消化していない</div>`; $("legend").innerHTML=""; return; }
+  const tot = spentTotal();
+  $("stack").innerHTML = keys.map(k=>
+    `<div style="flex:${S.spent[k]};background:${TYPE[k].c}">${S.spent[k]}</div>`).join("");
+  $("legend").innerHTML = keys.map(k=>
+    `<span><i style="background:${TYPE[k].c}"></i>${TYPE[k].ic} ${k} ${S.spent[k]}AP (${Math.round(S.spent[k]/tot*100)}%)</span>`).join("");
+}
+
+function renderAssets(){
+  $("assets").innerHTML = S.assets.map(a=>{
+    const col = a.dur < 30 ? "var(--danger)" : a.dur < 60 ? "var(--focus)" : "var(--grow)";
+    return `<div style="margin-bottom:9px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span>${a.name} <span style="color:var(--txt3);font-size:10px">${a.kind}</span></span>
+        <span style="font-variant-numeric:tabular-nums;color:var(--txt2)">${Math.round(a.pts)}pt / 耐久 ${a.dur}</span>
+      </div>
+      <div class="bar"><i style="width:${a.dur}%;background:${col}"></i></div>
+      ${a.dur<30?`<div style="font-size:10.5px;color:var(--danger);margin-top:2px">要メンテ — GROW クエストで耐久を戻す</div>`:""}
+    </div>`;
+  }).join("");
+}
+
+function renderLog(){
+  const el = $("log");
+  el.innerHTML = S.events.slice(-40).map(e=>
+    `{"seq":${e.seq},"ts":"${e.ts}","type":<span class="n">"${e.type}"</span>,"entity":"${e.entity_type}:${e.entity_id}","payload":${JSON.stringify(e.payload)}}`
+  ).join("\n");
+  el.scrollTop = el.scrollHeight;
+}
+
+/* ============================================================
+   アクション
+   ============================================================ */
+let timer = null;
+function start(q){
+  if(S.active) return;
+  const ap = apCost(q.min,q,S);
+  S.active = q.id; S.startedAt = Date.now(); q.status = "ACTIVE";
+  push("QUEST_STARTED","quest",q.id,{ap_reserved:ap,focus_before:S.focus,punctual:q.punctual??1});
+  clearInterval(timer);
+  timer = setInterval(()=>{
+    const s = Math.floor((Date.now()-S.startedAt)/1000);
+    const t = $("tmr"); if(t) t.textContent =
+      String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+  },1000);
+  render();
+}
+
+function complete(q){
+  clearInterval(timer);
+  const ap  = apCost(q.min,q,S);
+  const exp = gainExp(ap,q,S.focus);
+  const gain= ASSET_TYPES.includes(q.type) ? Math.round(ap*P.apRatio[q.type]*10)/10 : 0;
+
+  if(q.type === "REST"){
+    S.ap  = Math.min(S.apMax, S.ap + 20);
+    S.vit = Math.min(100, S.vit + 15);
+    push("QUEST_COMPLETED","quest",q.id,{ap:+20,vit:+15,exp:0});
+  } else {
+    S.ap  -= ap;
+    S.exp += exp;
+    S.spent[q.type] = (S.spent[q.type]||0) + ap;
+    S.focus = Math.min(S.vit < P.exhaustedThreshold ? 3 : P.focusMax, S.focus + 1);
+    if(q.type === "RAID")  S.vit = Math.max(0, S.vit - 12);
+    if(q.load === "DRAIN") S.vit = Math.max(0, S.vit - Math.round(q.min/6));
+    if(q.gold) S.gold += q.gold;
+    if(gain && q.asset){
+      const a = S.assets.find(x=>x.name===q.asset);
+      if(a){ a.pts += gain; a.dur = Math.min(100, a.dur + Math.round(ap/2)); }
+    }
+    push("QUEST_COMPLETED","quest",q.id,
+      {ap:-ap,exp:+exp,gold:q.gold||0,asset_points:gain,focus_after:S.focus,type:q.type});
+    while(S.exp >= nextExp(S.lv)){
+      S.exp -= nextExp(S.lv); S.lv++;
+      S.apMax = Math.min(200, 100 + Math.floor(S.lv/5)*10);
+      push("LEVEL_UP","player","ply_demo",{level:S.lv,ap_max:S.apMax});
+    }
+  }
+  q.status = "DONE"; S.active = null;
+  render();
+}
+
+function abandon(q){
+  clearInterval(timer);
+  const el = Math.max(1, Math.round((Date.now()-S.startedAt)/60000));
+  const ap = apCost(el,q,S);
+  S.ap -= ap; S.spent[q.type] = (S.spent[q.type]||0) + ap;
+  S.focus = 0; q.status = "ABANDONED"; q.dread = (q.dread||0)+1; S.active = null;
+  push("QUEST_ABANDONED","quest",q.id,{ap:-ap,focus_after:0,dread:q.dread,elapsed_min:el});
+  render();
+}
+
+function runAi(q){
+  const b = $("bAi"); if(!b || b.disabled) return;
+  b.disabled = true; b.textContent = "⚡ Claude 実行中…";
+  push("AI_RUN_STARTED","ai_run","air_demo",{quest_id:q.id,runner:q.runner,model:"claude-opus-5"});
+  renderLog();
+  setTimeout(()=>{
+    push("AI_RUN_FINISHED","ai_run","air_demo",
+      {status:"SUCCEEDED",input_tokens:3820,output_tokens:2140,cost_jpy:42.5,latency_ms:18400});
+    push("ARTIFACT_CREATED","artifact","art_demo",
+      {quest_id:q.id,version:1,path:"vault/artifacts/air_demo/v1.md",bytes:4820,acceptance:"PENDING"});
+    render();
+  }, 1800);
+}
+
+$("fixDeficit").onclick = ()=>{
+  const targets = S.quests.filter(q=>q.status==="PLANNED" && q.type==="MAINT");
+  targets.forEach(q=>{
+    q.status = "BACKLOG"; q.dread = (q.dread||0)+1;
+    push("QUEST_DEFERRED","quest",q.id,{to:"BACKLOG",dread:q.dread,reason:"AP_DEFICIT"});
+  });
+  S.deficitFixed = true; render();
+};
+
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName === "INPUT") return;
+  const k = e.key.toLowerCase();
+  if(k==="s" && $("bGo")) $("bGo").click();
+  if(k==="d" && $("bDone")) $("bDone").click();
+  if(k==="a" && $("bAbort")) $("bAbort").click();
+  if(k==="r"){ localStorage.removeItem(KEY); S = load(); render(); }
+});
+
+render();
+</script>
+</body>
+</html>

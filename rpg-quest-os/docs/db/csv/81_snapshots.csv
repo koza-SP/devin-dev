@@ -1,0 +1,11 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,スナップショットID,snapshot_id,TEXT,PK,Y,snp_<ULID>,,snp_01J9ZC8K3M
+2,対象日,date,TEXT,"UQ,IDX",Y,,,2026-08-26
+3,種別,snapshot_kind,TEXT,,Y,DAILY,DAILY/MANUAL/PRE_MIGRATION,DAILY
+4,最終連番,last_seq,INTEGER,,Y,,このスナップショットが含む event_log.seq の上限,18422
+5,Vaultパス,vault_path,TEXT,,Y,,,vault/snapshots/2026-08-26.json
+6,R2キー,r2_key,TEXT,,N,,,snapshots/2026-08-26.json
+7,ハッシュ,sha256,TEXT,,Y,,,3c9a...
+8,バイト数,size_bytes,INTEGER,,Y,0,,182400
+9,Gitコミット,git_commit,TEXT,,N,,push済みコミットSHA。これがバージョン履歴の実体,a1b2c3d
+10,作成日時,created_at,TEXT,,Y,,,2026-08-27T06:30:00+09:00

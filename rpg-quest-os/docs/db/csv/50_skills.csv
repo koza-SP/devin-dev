@@ -1,0 +1,11 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,スキルID,skill_id,TEXT,PK,Y,skl_<ULID>,,skl_01J9ZC8K3M
+2,名称,name,TEXT,,Y,,,要件定義
+3,系統,branch,TEXT,IDX,Y,,STR/INT/DEX/CHA/LUK/VIT,INT
+4,階層,tier,INTEGER,,Y,1,1-5。ツリーの深さ,2
+5,親スキルID,parent_skill_id,TEXT,FK,N,,自己参照。解放条件,skl_01J9ZC8K0A
+6,解放条件,unlock_condition,JSON,,Y,{},必要ステータス値・前提スキル,"{""stat_int"":200}"
+7,効果種別,effect_kind,TEXT,,Y,NONE,AP_DISCOUNT/EXP_BONUS/AP_MAX_UP/VIT_GUARD/FOCUS_CAP_UP/NONE,AP_DISCOUNT
+8,効果値,effect_value,REAL,,Y,0,AP_DISCOUNTなら割引率,0.05
+9,効果対象,effect_target,TEXT,,N,,適用するクエスト種別など,BUILD
+10,説明,description,TEXT,,N,,,BUILD系クエストのAP消費を5%軽減

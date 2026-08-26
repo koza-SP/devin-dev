@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QUEST OS — アーキテクチャ</title>
+<style>
+:root{
+  --bg:#0b0f1a; --bg2:#111726; --panel:#161e30;
+  --line:#26324d; --line2:#3a4a6b;
+  --txt:#e8edf7; --txt2:#94a3c0; --txt3:#64789c;
+  --ap:#38bdf8; --grow:#4ade80; --build:#f472b6; --exp:#a78bfa;
+  --gold:#fcd34d; --danger:#f87171; --labor:#fb923c;
+  --font:"Hiragino Kaku Gothic ProN","Yu Gothic",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(1000px 460px at 15% -6%,#1c2a4d 0,transparent 60%),var(--bg);
+  color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.75;padding:0 0 70px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1020px;margin:0 auto;padding:0 18px}
+h1{font-size:27px;font-weight:800;letter-spacing:-.01em;padding:44px 0 4px}
+.sub{color:var(--txt2);font-size:13px;padding-bottom:26px;border-bottom:1px solid var(--line);margin-bottom:30px}
+h2{
+  font-size:17px;font-weight:800;margin:44px 0 6px;padding-left:12px;
+  border-left:3px solid var(--ap);letter-spacing:.01em;
+}
+h2 .no{color:var(--ap);font-family:var(--mono);font-size:13px;margin-right:9px}
+.lead{color:var(--txt2);font-size:13px;margin-bottom:18px}
+.fig{
+  background:linear-gradient(180deg,var(--panel),var(--bg2));
+  border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;overflow-x:auto;
+}
+.fig svg{display:block;width:100%;min-width:720px;height:auto}
+figcaption{color:var(--txt3);font-size:11.5px;margin-top:10px;text-align:center}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px}
+th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+th{background:#1b2436;color:var(--txt2);font-size:11px;letter-spacing:.1em;font-weight:800;white-space:nowrap}
+td code,p code{font-family:var(--mono);font-size:11.5px;background:#0d1526;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--ap)}
+.note{
+  border:1px solid var(--line2);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;
+  background:rgba(252,211,77,.05);padding:12px 15px;font-size:12.5px;color:var(--txt2);margin-bottom:14px;
+}
+.note b{color:var(--txt)}
+.tbl-wrap{overflow-x:auto}
+ul{padding-left:20px;color:var(--txt2);font-size:13px;margin-bottom:14px}
+li{margin-bottom:5px}
+li b{color:var(--txt)}
+footer{color:var(--txt3);font-size:11.5px;text-align:center;padding-top:40px}
+/* SVG 共通 */
+.b{fill:#1a2338;stroke:#3a4a6b;stroke-width:1.2;rx:9}
+.b2{fill:#141c2e;stroke:#2c3a58;stroke-width:1.1;rx:8}
+.zone{fill:rgba(56,189,248,.035);stroke:#2f4468;stroke-width:1.1;stroke-dasharray:5 4;rx:12}
+.t{fill:#e8edf7;font-family:var(--font);font-size:12.5px;font-weight:700}
+.ts{fill:#94a3c0;font-family:var(--font);font-size:10.5px;font-weight:400}
+.tz{fill:#7d93b8;font-family:var(--font);font-size:10.5px;font-weight:800;letter-spacing:.16em}
+.tm{fill:#8fa3c4;font-family:var(--mono);font-size:10px}
+.ar{stroke:#5f77a3;stroke-width:1.5;fill:none;marker-end:url(#a)}
+.arx{stroke:#38bdf8;stroke-width:1.6;fill:none;marker-end:url(#ab)}
+.arg{stroke:#4ade80;stroke-width:1.6;fill:none;marker-end:url(#ag)}
+.ll{stroke:#33425f;stroke-width:1;stroke-dasharray:3 4}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>QUEST OS — アーキテクチャ</h1>
+<div class="sub">
+  RPG型タスク管理OS ／ サーバーレス・運用負荷ゼロ構成 ／ v0.1（2026-08-26）<br>
+  関連: 要件定義書 <code>requirements/260826_REQ_RPGタスク管理OS.md</code> ・ DB設計 <code>docs/db/QuestOS_DB設計.xlsx</code> ・ UIモック <code>docs/ui/index.html</code>
+</div>
+
+<!-- ══════════════════════ 図1 ══════════════════════ -->
+<h2><span class="no">01</span>全体構成</h2>
+<p class="lead">
+  常時起動するサーバーを一切持たない。Cloudflare のエッジ上で「静的配信（Pages）」と「都度実行の API（Workers）」に分離し、
+  認証は Cloudflare Access に委譲する。AWS / GCP の運用対象は存在しない。
+</p>
+<div class="fig">
+<svg viewBox="0 0 960 620" role="img" aria-label="全体構成図">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f77a3"/></marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#38bdf8"/></marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4ade80"/></marker>
+  </defs>
+
+  <!-- クライアント層 -->
+  <rect class="zone" x="30" y="22" width="900" height="98"/>
+  <text class="tz" x="46" y="44">CLIENT</text>
+  <rect class="b" x="120" y="52" width="300" height="52"/>
+  <text class="t"  x="140" y="74">ブラウザ（PC / スマートフォン）</text>
+  <text class="ts" x="140" y="92">静的HTML + fetch。API停止時も過去は読める</text>
+  <rect class="b" x="540" y="52" width="300" height="52"/>
+  <text class="t"  x="560" y="74">Claude Code（ローカル）</text>
+  <text class="ts" x="560" y="92">skill: quest-os／vault への書き出しと git push</text>
+
+  <!-- Cloudflare -->
+  <rect class="zone" x="30" y="168" width="900" height="300" style="fill:rgba(251,146,60,.04);stroke:#6b4a2f"/>
+  <text class="tz" x="46" y="190" style="fill:#e8a765">CLOUDFLARE（サーバーレス・常時起動なし）</text>
+
+  <rect class="b" x="60" y="202" width="840" height="42" style="fill:#26202f;stroke:#6d4f8f"/>
+  <text class="t"  x="80" y="222">Cloudflare Access</text>
+  <text class="ts" x="215" y="222">Google IdP による認証。Pages と /api/* の全経路を保護し、許可メール以外を弾く</text>
+
+  <rect class="b" x="60" y="268" width="390" height="56"/>
+  <text class="t"  x="80" y="290">Pages（静的配信）</text>
+  <text class="ts" x="80" y="309">HTML / JS / 過去スナップショット。ビルド成果物を配信</text>
+
+  <rect class="b" x="490" y="268" width="410" height="56"/>
+  <text class="t"  x="510" y="290">Workers（Hono / API <tspan class="tm">/api/*</tspan>）</text>
+  <text class="ts" x="510" y="309">AP整合性・クエスト操作・同期・AI実行の起点</text>
+
+  <rect class="b2" x="60"  y="352" width="132" height="86"/>
+  <text class="t"  x="76"  y="375">D1</text>
+  <text class="ts" x="76"  y="394">SQLite</text>
+  <text class="ts" x="76"  y="410">読み取りモデル</text>
+  <text class="ts" x="76"  y="426">（派生・再生成可）</text>
+
+  <rect class="b2" x="202" y="352" width="132" height="86"/>
+  <text class="t"  x="218" y="375">KV</text>
+  <text class="ts" x="218" y="394">設定 / 係数</text>
+  <text class="ts" x="218" y="410">OAuthトークン</text>
+  <text class="ts" x="218" y="426">（AES-GCM暗号化）</text>
+
+  <rect class="b2" x="344" y="352" width="132" height="86"/>
+  <text class="t"  x="360" y="375">R2</text>
+  <text class="ts" x="360" y="394">成果物</text>
+  <text class="ts" x="360" y="410">スナップショット</text>
+  <text class="ts" x="360" y="426">（非公開）</text>
+
+  <rect class="b2" x="486" y="352" width="132" height="86"/>
+  <text class="t"  x="502" y="375">Queues</text>
+  <text class="ts" x="502" y="394">AI Runner の</text>
+  <text class="ts" x="502" y="410">非同期実行</text>
+
+  <rect class="b2" x="628" y="352" width="132" height="86"/>
+  <text class="t"  x="644" y="375">Durable Obj.</text>
+  <text class="ts" x="644" y="394">SSE 配信</text>
+  <text class="ts" x="644" y="410">AP整合性ロック</text>
+  <text class="ts" x="644" y="426">（同時出撃1件）</text>
+
+  <rect class="b2" x="770" y="352" width="132" height="86"/>
+  <text class="t"  x="786" y="375">Cron</text>
+  <text class="ts" x="786" y="394">15分毎の同期</text>
+  <text class="ts" x="786" y="410">日次ロールオーバー</text>
+  <text class="ts" x="786" y="426">/ push</text>
+
+  <!-- 外部API -->
+  <rect class="zone" x="30" y="508" width="900" height="88" style="fill:rgba(74,222,128,.04);stroke:#2f6b45"/>
+  <text class="tz" x="46" y="530" style="fill:#7fd4a0">EXTERNAL API</text>
+  <rect class="b" x="110" y="538" width="330" height="44"/>
+  <text class="t"  x="130" y="560">Google Calendar API</text>
+  <text class="ts" x="130" y="576">events.list（syncToken差分）/ events.insert（実績書き戻し）</text>
+  <rect class="b" x="520" y="538" width="330" height="44"/>
+  <text class="t"  x="540" y="560">Anthropic Messages API</text>
+  <text class="ts" x="540" y="576">claude-sonnet-5 / claude-opus-5（stream:true）</text>
+
+  <!-- 矢印 -->
+  <path class="arx" d="M270,104 L270,198"/>
+  <text class="tm" x="278" y="160">HTTPS</text>
+  <path class="arx" d="M690,104 L690,198"/>
+  <text class="tm" x="698" y="160">wrangler / API</text>
+
+  <path class="ar" d="M255,244 L255,264"/>
+  <path class="ar" d="M695,244 L695,264"/>
+
+  <path class="arx" d="M455,296 L485,296"/>
+  <text class="tm" x="430" y="340">fetch /api/*（同一ドメイン・CORS不要）</text>
+
+  <path class="ar" d="M600,324 L126,348"/>
+  <path class="ar" d="M640,324 L268,348"/>
+  <path class="ar" d="M670,324 L410,348"/>
+  <path class="ar" d="M695,324 L552,348"/>
+  <path class="ar" d="M720,324 L694,348"/>
+  <path class="ar" d="M760,324 L836,348"/>
+
+  <path class="arg" d="M275,468 L275,534"/>
+  <text class="tm" x="283" y="500" style="fill:#7fd4a0">OAuth2 / 15分毎</text>
+  <path class="arg" d="M685,468 L685,534"/>
+  <text class="tm" x="693" y="500" style="fill:#7fd4a0">Messages API</text>
+</svg>
+<figcaption>図1 — 全体構成。Cloudflare の外にある運用対象は GitHub リポジトリのみ。</figcaption>
+</div>
+
+<div class="note">
+  <b>この構成を選んだ理由。</b>
+  ① 常時起動するプロセスがないため、月次の運用作業が実質ゼロになる。
+  ② Pages と Workers が同一ドメインで配信されるため CORS 設計が不要。
+  ③ API が落ちても Pages の静的コンテンツは配信され続けるので、過去の記録は必ず読める（NFR-03）。
+  ④ 認証を Cloudflare Access に委譲することで、単一ユーザーのためにパスワード管理機構を自作せずに済む。
+</div>
+
+<!-- ══════════════════════ 図2 ══════════════════════ -->
+<h2><span class="no">02</span>データの正本と派生 ─ バージョン履歴の実体</h2>
+<p class="lead">
+  「ソースファイルを重ねて履歴として保存する」という要求を、<b>追記型イベントログ（JSONL）を正本にする</b>ことで実現する。
+  D1 はそこから再生成できる派生物にすぎないため、スキーマを変えても作り直せばよく、全損しても復元できる。
+</p>
+<div class="fig">
+<svg viewBox="0 0 960 440" role="img" aria-label="データの正本と派生">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f77a3"/></marker>
+  </defs>
+
+  <text class="tz" x="30" y="28" style="fill:#f472b6">正本 — SOURCE OF TRUTH（追記のみ）</text>
+  <rect class="b" x="30" y="42" width="270" height="76" style="stroke:#8f4a72"/>
+  <text class="t"  x="48" y="66">vault/events/</text>
+  <text class="tm" x="48" y="84" style="fill:#f9a8d4">YYYY-MM-DD.jsonl</text>
+  <text class="ts" x="48" y="104">全ての状態変化を1行1イベントで追記</text>
+
+  <rect class="b" x="348" y="42" width="270" height="76" style="stroke:#8f4a72"/>
+  <text class="t"  x="366" y="66">vault/snapshots/</text>
+  <text class="tm" x="366" y="84" style="fill:#f9a8d4">YYYY-MM-DD.json</text>
+  <text class="ts" x="366" y="104">日次の状態スナップショット（再生の起点）</text>
+
+  <rect class="b" x="666" y="42" width="264" height="76" style="stroke:#8f4a72"/>
+  <text class="t"  x="684" y="66">GitHub（Private）</text>
+  <text class="ts" x="684" y="86">コミット履歴 = バージョン履歴そのもの</text>
+  <text class="ts" x="684" y="104">日次で自動 commit / push</text>
+
+  <path class="ar" d="M302,80 L344,80" marker-end="url(#a2)"/>
+  <text class="tm" x="300" y="132">日次集約</text>
+  <path class="ar" d="M620,80 L662,80" marker-end="url(#a2)"/>
+  <text class="tm" x="612" y="132">git push</text>
+
+  <!-- 派生 -->
+  <text class="tz" x="30" y="212" style="fill:#7fd4a0">派生 — DERIVED（いつでも作り直せる）</text>
+  <rect class="b" x="30" y="226" width="270" height="76" style="stroke:#2f6b45"/>
+  <text class="t"  x="48" y="250">D1（読み取りモデル）</text>
+  <text class="ts" x="48" y="270">quests / assets / player_days …</text>
+  <text class="ts" x="48" y="288">集計と検索のためだけに存在する</text>
+
+  <rect class="b" x="666" y="226" width="264" height="76" style="stroke:#2f6b45"/>
+  <text class="t"  x="684" y="250">Cloudflare Pages</text>
+  <text class="ts" x="684" y="270">静的化された過去データ</text>
+  <text class="ts" x="684" y="288">API が落ちても閲覧できる</text>
+
+  <path class="ar" d="M120,122 L120,222" marker-end="url(#a2)"/>
+  <text class="tm" x="128" y="178">replay（イベント再生）</text>
+  <path class="ar" d="M798,122 L798,222" marker-end="url(#a2)"/>
+  <text class="tm" x="806" y="178">GitHub Actions → deploy</text>
+
+  <!-- 参照者 -->
+  <rect class="b" x="348" y="336" width="270" height="64"/>
+  <text class="t"  x="366" y="360">ブラウザ</text>
+  <text class="ts" x="366" y="380">動的な操作は Workers → D1、履歴閲覧は Pages</text>
+
+  <path class="ar" d="M165,306 L400,332" marker-end="url(#a2)"/>
+  <text class="tm" x="180" y="326">Workers 経由</text>
+  <path class="ar" d="M795,306 L570,332" marker-end="url(#a2)"/>
+  <text class="tm" x="640" y="326">直接配信</text>
+</svg>
+<figcaption>図2 — 正本（上段）は追記のみ。下段はいつでも捨てて作り直せる。</figcaption>
+</div>
+
+<div class="note">
+  <b>D1 を正本にしない理由。</b>
+  正本がテキストファイルであれば、Git がそのままバージョン管理装置になり、差分も履歴も無料で手に入る。
+  スキーマ変更のたびにマイグレーションを書く必要もなく、再生成するだけでよい。
+  <code>D1 を全損しても vault から完全復元できる</code>（NFR-12 / RPO 1日・RTO 1時間）というのは、
+  この構成をとった場合の当然の帰結であって、別途バックアップ機構を作る必要がない。
+</div>
+
+<!-- ══════════════════════ 図3 ══════════════════════ -->
+<h2><span class="no">03</span>実行ボタンを押したときの流れ</h2>
+<p class="lead">
+  Workers には CPU 時間の制限があるため、Claude の呼び出しは Queues に逃がして非同期化する。
+  進捗は Durable Object を経由した SSE でブラウザに返し、成果物は R2 と vault の両方に積層保存する。
+</p>
+<div class="fig">
+<svg viewBox="0 0 960 500" role="img" aria-label="AI Runner のシーケンス">
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5f77a3"/></marker>
+    <marker id="a3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#a78bfa"/></marker>
+  </defs>
+
+  <!-- レーン -->
+  <rect class="b" x="20"  y="16" width="150" height="38"/><text class="t" x="46"  y="40">ブラウザ</text>
+  <rect class="b" x="205" y="16" width="150" height="38"/><text class="t" x="222" y="40">Workers API</text>
+  <rect class="b" x="390" y="16" width="160" height="38"/><text class="t" x="404" y="40">Queue Consumer</text>
+  <rect class="b" x="585" y="16" width="150" height="38"/><text class="t" x="600" y="40">Anthropic API</text>
+  <rect class="b" x="770" y="16" width="170" height="38"/><text class="t" x="784" y="40">R2 / D1 / vault</text>
+
+  <line class="ll" x1="95"  y1="58" x2="95"  y2="474"/>
+  <line class="ll" x1="280" y1="58" x2="280" y2="474"/>
+  <line class="ll" x1="470" y1="58" x2="470" y2="474"/>
+  <line class="ll" x1="660" y1="58" x2="660" y2="474"/>
+  <line class="ll" x1="855" y1="58" x2="855" y2="474"/>
+
+  <path class="ar" d="M95,90 L276,90"  marker-end="url(#a3)"/>
+  <text class="tm" x="100" y="84">① POST /api/quests/:id/run</text>
+
+  <path class="ar" d="M280,126 L466,126" marker-end="url(#a3)"/>
+  <text class="tm" x="286" y="120">② enqueue（ai_runs.status = QUEUED）</text>
+
+  <path class="ar" d="M276,162 L99,162"  marker-end="url(#a3)"/>
+  <text class="tm" x="104" y="156">③ 202 Accepted { run_id }</text>
+
+  <path class="ar" d="M95,198 L276,198"  marker-end="url(#a3)"/>
+  <text class="tm" x="100" y="192">④ GET /api/runs/:id/stream（SSE・Durable Object が保持）</text>
+
+  <path class="ar" d="M470,234 L656,234" marker-end="url(#a3b)" style="stroke:#a78bfa"/>
+  <text class="tm" x="476" y="228" style="fill:#c4b5fd">⑤ Messages API（stream:true / max_tokens 8,000）</text>
+
+  <path class="ar" d="M656,270 L474,270" marker-end="url(#a3b)" style="stroke:#a78bfa"/>
+  <text class="tm" x="480" y="264" style="fill:#c4b5fd">⑥ 差分トークンをストリーム受信</text>
+
+  <path class="ar" d="M466,306 L99,306"  marker-end="url(#a3)"/>
+  <text class="tm" x="104" y="300">⑦ Durable Object 経由で進捗を push（画面に逐次表示）</text>
+
+  <path class="ar" d="M470,342 L851,342" marker-end="url(#a3)"/>
+  <text class="tm" x="476" y="336">⑧ 成果物を R2 に保存（artifacts / version を +1 して積層）</text>
+
+  <path class="ar" d="M470,378 L851,378" marker-end="url(#a3)"/>
+  <text class="tm" x="476" y="372">⑨ ai_runs にトークン数・コストを記録／event_log に追記</text>
+
+  <rect x="20" y="404" width="920" height="60" rx="9" style="fill:rgba(74,222,128,.06);stroke:#2f6b45;stroke-width:1.1;stroke-dasharray:5 4"/>
+  <text class="t"  x="40" y="428" style="fill:#7fd4a0">⑩ 日次ロールオーバー（Cron Trigger）</text>
+  <text class="ts" x="40" y="450">event_log を vault/events/YYYY-MM-DD.jsonl へ書き出し → スナップショット生成 → GitHub へ commit / push → Pages 再デプロイ</text>
+</svg>
+<figcaption>図3 — 実行ボタン押下から、履歴として静的サイトに焼き付くまで。</figcaption>
+</div>
+
+<div class="note">
+  <b>コスト上限は Worker 側で必ず止める。</b>
+  ② の enqueue 前に当日の <code>ai_runs.cost_jpy</code> 合計を確認し、
+  <code>ai.daily_cost_cap_jpy</code>（既定 300円）を超えていれば <code>BUDGET_BLOCKED</code> として実行を拒否する（FR-F4-06）。
+  ブラウザ側の制御だけに頼らない。
+</div>
+
+<!-- ══════════════════════ 技術選定 ══════════════════════ -->
+<h2><span class="no">04</span>技術選定と、その理由</h2>
+<div class="tbl-wrap">
+<table>
+<tr><th>領域</th><th>採用</th><th>理由</th><th>採らなかった選択肢</th></tr>
+<tr><td>静的配信</td><td>Cloudflare Pages</td><td>無料・グローバルCDN・Workers と同一ドメインで配信できる</td><td>S3 + CloudFront（IaC と証明書の運用が発生する）</td></tr>
+<tr><td>API</td><td>Cloudflare Workers（Hono）</td><td>コールドスタートがほぼ無く、常時起動コストがゼロ</td><td>Lambda + API Gateway（VPC・IAM・デプロイ基盤の運用が必要）</td></tr>
+<tr><td>DB</td><td>D1（SQLite）</td><td>個人利用の規模に十分。派生物なので作り直せる</td><td>DynamoDB（集計クエリが書きにくい）／Postgres（常時起動が必要）</td></tr>
+<tr><td>正本</td><td>JSONL（append-only）+ Git</td><td>履歴管理・差分・バックアップが Git だけで完結する</td><td>DBのポイントインタイムリカバリ（別途運用が必要）</td></tr>
+<tr><td>オブジェクト保存</td><td>R2</td><td>エグレス無料。成果物とスナップショットの置き場</td><td>S3（エグレス課金）</td></tr>
+<tr><td>非同期実行</td><td>Queues + Durable Objects</td><td>Workers の CPU 制限を回避しつつ、SSE で進捗を返せる</td><td>SQS + Lambda（構成要素が増える）</td></tr>
+<tr><td>排他制御</td><td>Durable Objects</td><td>「同時に出撃できるのは1件」を単一の直列化ポイントで保証できる</td><td>D1 のトランザクション（分散環境で競合しうる）</td></tr>
+<tr><td>認証</td><td>Cloudflare Access（Google IdP）</td><td>単一ユーザーのために認証機構を自作しない</td><td>Cognito／自前の JWT 発行（過剰）</td></tr>
+<tr><td>定期実行</td><td>Cron Triggers</td><td>15分毎の同期と日次ロールオーバーに十分</td><td>EventBridge（別クラウドを持ち込むことになる）</td></tr>
+<tr><td>ローカル側</td><td>Claude Code スキル</td><td>Runner 定義をクラウドと共有し、同じ処理をローカルでも走らせる</td><td>専用CLIの自作（保守対象が増える）</td></tr>
+</table>
+</div>
+
+<!-- ══════════════════════ コスト ══════════════════════ -->
+<h2><span class="no">05</span>ランニングコスト</h2>
+<div class="tbl-wrap">
+<table>
+<tr><th>項目</th><th>月額</th><th>備考</th></tr>
+<tr><td>Cloudflare Workers Paid</td><td>$5</td><td>Queues / Durable Objects を使うため Paid プランが必要</td></tr>
+<tr><td>D1 / KV / R2 / Pages / Cron</td><td>0円</td><td>個人利用の規模では無料枠に収まる</td></tr>
+<tr><td>Anthropic API</td><td>300〜1,500円</td><td>1日5〜10実行の想定。日次上限 300円で頭打ちにする</td></tr>
+<tr><td>GitHub</td><td>0円</td><td>Private リポジトリ</td></tr>
+<tr><td>Google Calendar API</td><td>0円</td><td>15分間隔の同期は無料枠の範囲内</td></tr>
+<tr><td><b>合計</b></td><td><b>概ね 1,000〜2,500円</b></td><td>NFR-09（3,000円以内）を満たす</td></tr>
+</table>
+</div>
+
+<!-- ══════════════════════ 段階 ══════════════════════ -->
+<h2><span class="no">06</span>構築の順序</h2>
+<div class="tbl-wrap">
+<table>
+<tr><th>Phase</th><th>構成</th><th>作るもの</th><th>完了条件</th></tr>
+<tr><td>Phase 1</td><td>静的HTML + localStorage のみ</td><td>AP計算・クエスト・出撃/完了・AER</td><td>手入力で1週間、実際に運用できる</td></tr>
+<tr><td>Phase 2</td><td>+ Workers / D1 / Access / Cron</td><td>API化・Googleカレンダー同期・vault と Git 連携</td><td>カレンダーから自動でクエストが並ぶ</td></tr>
+<tr><td>Phase 3</td><td>+ Queues / Durable Objects / R2</td><td>AI Runner・成果物保存・日次レポート</td><td>実行ボタンから Claude が動き、成果物が履歴に残る</td></tr>
+<tr><td>Phase 4</td><td>（追加開発）</td><td>資産管理・収益管理・スキルツリー・履歴 diff</td><td>Asset Stock と Gold/AP が可視化される</td></tr>
+</table>
+</div>
+
+<div class="note">
+  <b>Phase 1 を localStorage だけで作るのは意図的な判断。</b>
+  このシステムの成否は技術ではなく「ゲームルールが自分に効くかどうか」で決まる。
+  効かないルールの上にインフラを積んでも無駄になるため、まず最小コストでルールを検証し、
+  数値（AP換算・EXP倍率・AERの目標値）を調整してから Cloudflare に載せる。
+</div>
+
+<footer>QUEST OS — Architecture v0.1 ／ 2026-08-26</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,18 @@
+﻿No,親テーブル,子テーブル,カーディナリティ,結合キー,削除時挙動,備考
+1,players,player_days,1 : n,player_days.player_id,CASCADE,1日1レコード
+2,players,quests,1 : n,quests.player_id,CASCADE,
+3,players,resource_ledger,1 : n,resource_ledger.player_id,CASCADE,
+4,quests,quest_runs,1 : n,quest_runs.quest_id,CASCADE,中断再開で複数行になる
+5,quest_templates,quests,1 : n,quests.template_id,SET NULL,定型から生成された場合
+6,calendar_events,quests,1 : 1,quests.calendar_event_id,SET NULL,カレンダー由来のクエスト
+7,assets,quests,1 : n,quests.asset_id,SET NULL,どの資産に対する作業か
+8,assets,asset_events,1 : n,asset_events.asset_id,CASCADE,
+9,assets,income_records,1 : n,income_records.asset_id,SET NULL,資産由来収益(passive)
+10,quests,income_records,1 : n,income_records.quest_id,SET NULL,役務由来収益(active)
+11,runners,quests,1 : n,quests.runner_id,SET NULL,実行ボタンの中身
+12,quest_runs,ai_runs,1 : n,ai_runs.quest_run_id,SET NULL,1回の出撃で複数回AI実行しうる
+13,ai_runs,artifacts,1 : n,artifacts.ai_run_id,SET NULL,成果物のバージョン積層
+14,quests,artifacts,1 : n,artifacts.quest_id,CASCADE,
+15,skills,player_skills,1 : 1,player_skills.skill_id,CASCADE,
+16,skills,skills,1 : n,skills.parent_skill_id,SET NULL,スキルツリーの親子(自己参照)
+17,（全テーブル）,event_log,n : 1,event_log.entity_type/entity_id,－,全状態変化を追記。物理FKは張らない

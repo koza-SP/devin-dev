@@ -1,0 +1,15 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,Runner ID,runner_id,TEXT,PK,Y,rnr_<ULID>,,rnr_01J9ZC8K3M
+2,名称,name,TEXT,,Y,,実行ボタンのラベル,LPコピー3案生成
+3,説明,description,TEXT,,N,,,資産の現状と訴求を踏まえてコピー案を出す
+4,モデル,model,TEXT,,Y,claude-sonnet-5,claude-sonnet-5 / claude-opus-5 など,claude-opus-5
+5,systemプロンプト,system_prompt,TEXT,,Y,,,あなたはLPのコピーライターです。
+6,userテンプレート,user_template,TEXT,,Y,,{{quest.title}} 等のプレースホルダを使う,対象資産: {{asset.name}} / 目的: {{quest.description}}
+7,入力参照,input_refs,JSON,,Y,[],渡してよいデータの明示的ホワイトリスト(SEC-07),"[""quest"",""asset"",""latest_artifact""]"
+8,出力形式,output_format,TEXT,,Y,MARKDOWN,MARKDOWN/JSON/TEXT/DIFF,MARKDOWN
+9,出力スキーマ,output_schema,JSON,,N,,JSON出力時の検証スキーマ,
+10,max_tokens,max_tokens,INTEGER,,Y,8000,1実行あたりの上限,8000
+11,temperature,temperature,REAL,,Y,1.0,,1.0
+12,想定コスト,expected_cost_jpy,INTEGER,,N,,実行前に画面表示する概算,35
+13,ローカル実行可,local_runnable,INTEGER,,Y,1,Claude Codeスキルからも同定義で実行できるか,1
+14,有効フラグ,is_active,INTEGER,,Y,1,,1

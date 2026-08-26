@@ -1,0 +1,12 @@
+﻿ID,画面,パス,主要コンポーネント,主要API,キーボード,優先度
+SC-01,HOME(拠点),/,ステータスバー / NEXT QUEST(1件) / AP収支ゲージ / AERメーター / デバフバッジ,GET /api/state,n:次 s:出撃 d:完了 a:放棄,MUST
+SC-02,QUEST BOARD,/quests,当日・週のクエスト一覧 / フィルタ / 受信箱(UNSORTED),GET /api/quests,j/k:移動 Enter:詳細,MUST
+SC-03,QUEST DETAIL,/quests/:id,詳細 / AP内訳 / Runner設定 / 実行ボタン / 成果物バージョン,"GET /api/quests, POST run",e:実行,MUST
+SC-04,CALENDAR,/calendar,週表示 / AP見積オーバーレイ / AP赤字の可視化,GET /api/quests,←→:週移動,SHOULD
+SC-05,ASSETS(宝物庫),/assets,資産カード一覧 / durabilityバー / 投下AP / 回収額 / 要メンテ,GET /api/assets,,MUST
+SC-06,STATUS,/status,レーダーチャート / LV・EXPバー / スキルツリー,GET /api/state,,SHOULD
+SC-07,LEDGER(収支),/ledger,Gold推移 / active・passive内訳 / Gold/AP / MRR,GET /api/income,,SHOULD
+SC-08,REPORT,/report,日次・週次レポート / AI講評 / 翌日提案,GET /api/report/*,,SHOULD
+SC-09,HISTORY(書庫),/history,スナップショット一覧 / diff表示 / Gitコミットリンク,GET /api/snapshots,,COULD
+SC-10,SETTINGS,/settings,カレンダーマッピング / バランス係数 / コスト上限 / 起床時刻,"GET,PUT /api/settings",,MUST
+SC-11,CHECKIN(起床),/checkin,睡眠時間入力 / 本日のAP予算確定 / 同期結果,POST /api/checkin,,MUST

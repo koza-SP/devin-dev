@@ -1,0 +1,8 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,同期キー,sync_key,TEXT,PK,Y,,対象を識別する。calendar:<calendarId> 等,calendar:primary
+2,syncToken,sync_token,TEXT,,N,,Google差分同期トークン。410で無効化されフル同期,CPjq...
+3,最終同期日時,last_synced_at,TEXT,,Y,,,2026-08-26T06:30:05+09:00
+4,最終結果,last_status,TEXT,,Y,OK,OK/PARTIAL/ERROR,OK
+5,取得件数,last_count,INTEGER,,Y,0,,14
+6,エラー内容,last_error,TEXT,,N,,,
+7,連続失敗回数,fail_streak,INTEGER,,Y,0,3回連続でアラート,0

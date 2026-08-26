@@ -1,0 +1,13 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,台帳ID,ledger_id,TEXT,PK,Y,led_<ULID>,,led_01J9ZC8K3M
+2,プレイヤーID,player_id,TEXT,"FK,IDX",Y,,,ply_01J9ZC8K3M
+3,対象日,date,TEXT,IDX,Y,,ゲーム内日付,2026-08-26
+4,リソース種別,resource,TEXT,IDX,Y,,AP/VIT/FOCUS/EXP/GOLD/ASSET_POINT,AP
+5,増減値,delta,REAL,,Y,,マイナスは消費,-32
+6,残高,balance_after,REAL,,Y,,この行適用後の残高,38.5
+7,理由コード,reason,TEXT,IDX,Y,,90_enums の LedgerReason,QUEST_COMPLETE
+8,関連エンティティ種別,ref_type,TEXT,,N,,quest/asset/rest/checkin など,quest
+9,関連エンティティID,ref_id,TEXT,IDX,N,,,qst_01J9ZC8K3M
+10,適用倍率,multipliers,JSON,,N,,計算に用いた係数の内訳(監査用),"{""load"":1.6,""dread"":1.1}"
+11,メモ,note,TEXT,,N,,,LP改稿 60分 DEEP
+12,発生日時,occurred_at,TEXT,IDX,Y,,ISO8601,2026-08-26T10:05:00+09:00

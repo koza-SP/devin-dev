@@ -1,0 +1,20 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,プレイヤーID,player_id,TEXT,PK,Y,ply_<ULID>,本人1名のみ,ply_01J9ZC8K3M
+2,表示名,display_name,TEXT,,Y,,画面表示名,コウザ
+3,レベル,level,INTEGER,,Y,1,現在レベル,12
+4,累計経験値,total_exp,INTEGER,,Y,0,生涯獲得EXPの総和,13523
+5,現レベル内EXP,current_exp,INTEGER,,Y,0,次レベルまでの進捗,310
+6,次レベル必要EXP,next_exp,INTEGER,,Y,100,NEXT(LV)=round(100*LV^1.35)。LV12なら2863,2863
+7,STR推進,stat_str,INTEGER,,Y,0,実行して終わらせる力,142
+8,INT設計,stat_int,INTEGER,,Y,0,構造化・企画・戦略,230
+9,DEX実装,stat_dex,INTEGER,,Y,0,手数と速度,188
+10,CHA交渉,stat_cha,INTEGER,,Y,0,対人・営業・発信,96
+11,LUK露出,stat_luk,INTEGER,,Y,0,偶発的な機会創出,54
+12,VIT継続,stat_vit,INTEGER,,Y,0,続ける力・体調管理,120
+13,累計Gold,total_gold,INTEGER,,Y,0,生涯確定売上(円),4820000
+14,資産ストック,asset_stock,REAL,,Y,0,全assetsのasset_points合計(減衰後),1842.5
+15,起床時刻,wake_time,TEXT,,Y,06:30,日次ロールオーバーの基準時刻,06:30
+16,タイムゾーン,timezone,TEXT,,Y,Asia/Tokyo,IANA TZ,Asia/Tokyo
+17,週次AER目標,aer_target,REAL,,Y,0.40,資産投下率の目標値,0.40
+18,作成日時,created_at,TEXT,,Y,,ISO8601,2026-08-26T06:30:00+09:00
+19,更新日時,updated_at,TEXT,,Y,,ISO8601,2026-08-26T18:00:00+09:00

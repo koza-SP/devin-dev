@@ -1,0 +1,14 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,成果物ID,artifact_id,TEXT,PK,Y,art_<ULID>,,art_01J9ZC8K3M
+2,クエストID,quest_id,TEXT,"FK,IDX",Y,,,qst_01J9ZC8K3M
+3,AI実行ID,ai_run_id,TEXT,FK,N,,手作業成果物ならNULL,air_01J9ZC8K3M
+4,バージョン,version,INTEGER,,Y,1,同一クエスト内の連番。積層保存する,3
+5,タイトル,title,TEXT,,Y,,,LPコピー案 v3
+6,形式,content_type,TEXT,,Y,text/markdown,MIME,text/markdown
+7,本文,content,TEXT,,N,,小さい成果物はDBに直接保持,# 案A ...
+8,R2キー,r2_key,TEXT,,N,,大きい成果物はR2。artifacts/<quest_id>/v3.md,artifacts/qst_01J9.../v3.md
+9,Vaultパス,vault_path,TEXT,,N,,ローカル正本のパス,vault/artifacts/air_01J9.../v3.md
+10,バイト数,size_bytes,INTEGER,,Y,0,,4820
+11,ハッシュ,sha256,TEXT,,Y,,同一内容の重複検知・改ざん検知,9f2b...
+12,採否,acceptance,TEXT,,Y,PENDING,PENDING/ACCEPTED/REJECTED。ACCEPTEDのみ資産に反映,ACCEPTED
+13,作成日時,created_at,TEXT,,Y,,,2026-08-26T09:15:18+09:00

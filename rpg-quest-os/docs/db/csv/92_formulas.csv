@@ -1,0 +1,25 @@
+﻿No,名称,計算式,入力,出力,適用タイミング,備考
+1,最大AP,"ap_max = min(200, 100 + floor(level/5) * 10)",level,ap_max,日次ロールオーバー,hard_capで頭打ち
+2,起床時AP回復,"ap_start = round(ap_max * min(1.0, sleep_hours / 7.0))","ap_max, sleep_hours",ap_start,起床チェックイン,睡眠不足はそのまま予算減として反映
+3,起床時VIT回復,"vit = min(100, vit_prev + sleep_hours * 12)","vit_prev, sleep_hours",vit,起床チェックイン,
+4,AP見積,estimate_ap = ceil(estimate_min / 3 * load_coef * dread_coef * ambush_coef * debuff_coef),"estimate_min, load, dread, is_ambush, debuffs",estimate_ap,クエスト作成/出撃時,画面には内訳も表示する
+5,dread係数,"dread_coef = min(1.5, 1 + 0.05 * dread)",dread,dread_coef,AP見積時,放置するほど重くなる
+6,強襲係数,ambush_coef = is_ambush ? 1.2 : 1.0,is_ambush,ambush_coef,AP見積時,
+7,消耗係数,debuff_coef = (vit < 30) ? 1.3 : 1.0,vit,debuff_coef,AP見積時,
+8,確定AP,actual_ap = ceil(elapsed_min / 3 * load_coef * dread_coef * ambush_coef * debuff_coef),elapsed_min ほか,actual_ap,完了/放棄時,見積ではなく実測で確定させる
+9,獲得EXP,exp = round(actual_ap * type_mult * focus_mult * punctual_bonus),"actual_ap, quest_type, focus, punctual",exp,完了時,
+10,FOCUS倍率,focus_mult = 1.0 + 0.1 * focus,focus,focus_mult,完了時,最大1.5
+11,次レベル必要EXP,next_exp = round(100 * level ^ 1.35),level,next_exp,レベルアップ時,
+12,ステータス配分,stat_gain = floor(exp * 0.30 / len(stat_tags)),"exp, stat_tags",各stat,完了時,stat_tagsは最大2つ
+13,資産ポイント獲得,asset_points += actual_ap * point_ratio[quest_type],"actual_ap, quest_type",asset_points,完了時,BUILD1.0/GROW0.6/LEARN0.4
+14,資産の日次減衰,asset_points *= (1 - decay_rate / 30),"asset_points, decay_rate",asset_points,日次ロールオーバー,90日放置でdecay_rateが0.08に切替
+15,耐久の日次低下,"durability = max(0, durability - 1)",durability,durability,日次ロールオーバー,GROW実行で回復
+16,耐久回復,"durability = min(100, durability + round(actual_ap / 2))","durability, actual_ap",durability,GROW完了時,
+17,AER(日次),aer_day = AP(BUILD+GROW+LEARN) / AP(全種別、REST除く),resource_ledger,aer_day,都度再計算,分母0なら0とする
+18,AER(週次),aer_week = 直近7日のAP(BUILD+GROW+LEARN) / 直近7日のAP合計,resource_ledger,aer_week,日次ロールオーバー,目標0.40
+19,Gold/AP,gold_per_ap = 期間内Gold合計 / 期間内AP消費合計,"income_records, resource_ledger",gold_per_ap,レポート生成時,役務と資産の比較指標
+20,資産のAP回収額,income_per_ap = total_income / total_ap_invested,assets,income_per_ap,収益計上時,資産ごとの投資対効果
+21,AP赤字判定,is_ap_deficit = (sum(PLANNEDのestimate_ap) > ap_max),quests,is_ap_deficit,クエスト予定変更時,超過分のBACKLOG送りを提案
+22,NEXT QUEST選定,"sort by (scheduled_start asc, dread desc, asset_score desc, |estimate_ap - ap_current| asc) の先頭1件",quests(PLANNED),quest,HOME表示時,ap_currentで実行不能なものは除外
+23,AI概算コスト,cost_jpy = (input_tokens * in_rate + output_tokens * out_rate) * usd_jpy / 1e6,"tokens, model",cost_jpy,AI実行終了時,レートはbalance_paramsに置く
+24,MRR,mrr = 当月のincome_records で is_recurring=1 の合計,income_records,mrr,月次集計,

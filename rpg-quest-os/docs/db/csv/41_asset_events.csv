@@ -1,0 +1,11 @@
+﻿No,論理名,物理カラム名,型,キー,NOT NULL,既定値,説明,例
+1,資産イベントID,asset_event_id,TEXT,PK,Y,aev_<ULID>,,aev_01J9ZC8K3M
+2,資産ID,asset_id,TEXT,"FK,IDX",Y,,,ast_01J9ZC8K3M
+3,対象日,date,TEXT,IDX,Y,,,2026-08-26
+4,種別,event_kind,TEXT,,Y,,BUILD_GAIN/GROW_GAIN/LEARN_GAIN/DECAY/DURABILITY_DOWN/DURABILITY_UP/DORMANT/REVIVE,BUILD_GAIN
+5,資産P増減,points_delta,REAL,,Y,0,,27.0
+6,耐久増減,durability_delta,INTEGER,,Y,0,,13
+7,適用後資産P,points_after,REAL,,Y,,,312.5
+8,適用後耐久,durability_after,INTEGER,,Y,,,85
+9,関連クエストID,quest_id,TEXT,FK,N,,,qst_01J9ZC8K3M
+10,発生日時,occurred_at,TEXT,,Y,,,2026-08-26T10:05:00+09:00
